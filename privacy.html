@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zásady ochrany soukromí – Xtally Tabulky</title>
+<meta name="description" content="Zásady ochrany soukromí Xtally Tabulky: přesný popis toho, jaká data appka zpracovává, co ukládá jen lokálně ve vašem prohlížeči a jaké externí služby appka používá.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://webzen2026.github.io/xtally-sheets/privacy.html">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0d9488">
+<meta name="color-scheme" content="light dark">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f7f6; --bg-soft:#ffffff; --ink:#12201d; --ink-soft:#526460; --line:#dde7e4;
+    --card:#ffffff; --accent:#0d9488; --accent-2:#059669; --success:#16a34a;
+    --shadow: 0 20px 50px -20px rgba(13,148,136,.25), 0 2px 10px rgba(20,40,36,.06);
+    --radius:18px; color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1613; --bg-soft:#0f1e1a; --ink:#eef5f3; --ink-soft:#9db3ad; --line:#1f322c;
+    --card:#132420; --accent:#2dd4bf; --accent-2:#34d399;
+    --shadow: 0 20px 50px -20px rgba(45,212,191,.3), 0 2px 10px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+  @media (prefers-color-scheme: dark){
+    html:not([data-theme="light"]):not([data-theme="dark"]){
+      --bg:#0b1613; --bg-soft:#0f1e1a; --ink:#eef5f3; --ink-soft:#9db3ad; --line:#1f322c;
+      --card:#132420; --accent:#2dd4bf; --accent-2:#34d399;
+      --shadow: 0 20px 50px -20px rgba(45,212,191,.3), 0 2px 10px rgba(0,0,0,.4);
+      color-scheme:dark;
+    }
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--bg); color:var(--ink); font-family:'Inter',system-ui,-apple-system,sans-serif;
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  h1,h2,h3,.brand{ font-family:'Sora','Inter',sans-serif; }
+  a{ color:var(--accent); }
+  [hidden]{ display:none !important; }
+  .wrap{ max-width:820px; margin:0 auto; padding-inline:20px; }
+  header.site{ position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--bg-soft) 88%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .header-inner{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-block:14px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.15rem; text-decoration:none; color:var(--ink); }
+  .brand .mark{ width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .brand .mark svg{ width:17px; height:17px; }
+  .header-actions{ display:flex; align-items:center; gap:8px; }
+  .lang-switch{ display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+  .lang-switch button{ border:none; background:transparent; color:var(--ink-soft); font-size:.76rem; font-weight:700; padding:8px 11px; cursor:pointer; font-family:inherit; }
+  .lang-switch button.active{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; }
+  .icon-btn{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--bg-soft); color:var(--ink); cursor:pointer; flex-shrink:0; }
+  .icon-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .icon-btn svg{ width:18px; height:18px; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:.86rem; color:var(--ink-soft); text-decoration:none; margin:28px 0 8px; }
+  .back-link:hover{ color:var(--accent); }
+  main{ padding-bottom:60px; }
+  .doc-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:36px clamp(20px,5vw,48px); margin-top:10px; }
+  .doc-card h1{ font-size:clamp(1.5rem,3vw,2rem); margin:0 0 6px; }
+  .updated{ font-size:.84rem; color:var(--ink-soft); margin:0 0 28px; }
+  .doc-card h2{ font-size:1.15rem; margin:32px 0 10px; }
+  .doc-card h2:first-of-type{ margin-top:0; }
+  .doc-card p{ margin:0 0 14px; color:var(--ink-soft); }
+  .doc-card ul{ margin:0 0 14px; padding-left:1.3em; color:var(--ink-soft); }
+  .doc-card li{ margin-bottom:6px; }
+  .doc-card strong{ color:var(--ink); }
+  .callout{ background:color-mix(in srgb, var(--success) 10%, transparent); border:1px solid color-mix(in srgb, var(--success) 28%, transparent); border-radius:12px; padding:14px 18px; margin:0 0 20px; font-size:.92rem; color:var(--ink); }
+  .disclaimer{ border-top:1px solid var(--line); margin-top:30px; padding-top:18px; font-size:.82rem; color:var(--ink-soft); }
+  footer.site{ border-top:1px solid var(--line); padding-block:30px; }
+  .footer-inner{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px; font-size:.84rem; color:var(--ink-soft); }
+  .footer-inner a{ color:var(--ink-soft); text-decoration:none; }
+  .footer-inner a:hover{ color:var(--accent); }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap header-inner">
+    <a href="./" class="brand">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2.4" stroke="#fff" stroke-width="2"/><path d="M4 10h16M10 4v16" stroke="#fff" stroke-width="2"/></svg></span>
+      <span>Xtally <span style="font-weight:600;opacity:.7;font-size:.85em;">Tabulky</span></span>
+    </a>
+    <div class="header-actions">
+      <div class="lang-switch" id="langSwitch" role="group" aria-label="Jazyk / Language">
+        <button type="button" data-lang="cs">CS</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="icon-btn" id="themeToggle" type="button" title="Přepnout vzhled">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <a href="./" class="back-link" data-i18n="backLink">← Zpět na Xtally Tabulky</a>
+  <div class="doc-card">
+    <h1 data-i18n="title">Zásady ochrany soukromí</h1>
+    <p class="updated" data-i18n="updated">Poslední aktualizace: 15. září 2026</p>
+
+    <div class="callout" data-i18n="callout">Xtally Tabulky nemá žádný server ani databázi. Appka běží celá ve vašem prohlížeči a vaše tabulky se nikdy nikam neodesílají.</div>
+
+    <p data-i18n="intro">Tento dokument srozumitelně popisuje, jaká data appka Xtally Tabulky zpracovává, kde se ukládají a jaké externí služby appka využívá. Cílem je být maximálně konkrétní – žádné vágní formulace.</p>
+
+    <h2 data-i18n="h1">Jaká data appka ukládá</h2>
+    <p data-i18n="p1">Appka ukládá následující údaje výhradně do úložiště localStorage vašeho prohlížeče, na vašem vlastním zařízení:</p>
+    <ul>
+      <li data-i18n="li1">Obsah, vzorce, formátování a název tabulek, které v appce vytvoříte nebo importujete.</li>
+      <li data-i18n="li2">Čas poslední úpravy jednotlivých tabulek.</li>
+      <li data-i18n="li3">Vaše nastavení appky – zvolený jazyk (čeština/angličtina) a světlý/tmavý vzhled.</li>
+    </ul>
+    <p data-i18n="p2">Tato data nikdy neopouští vaše zařízení. Xtally Tabulky nemá backend server, na který by se dala odeslat, a appka je ani neodesílá.</p>
+
+    <h2 data-i18n="h2">Co appka nedělá</h2>
+    <ul>
+      <li data-i18n="nli1">Nevyžaduje registraci ani přihlašování a nezná vaši identitu.</li>
+      <li data-i18n="nli2">Neodesílá obsah vašich tabulek na žádný server.</li>
+      <li data-i18n="nli3">Nepoužívá analytické nástroje (např. Google Analytics) ani jiné sledování chování.</li>
+      <li data-i18n="nli4">Nepoužívá reklamní ani sledovací cookies.</li>
+      <li data-i18n="nli5">Neprodává ani nesdílí žádná data s třetími stranami – nemá je totiž k dispozici.</li>
+    </ul>
+
+    <h2 data-i18n="h3">Externí služby, které appka načítá</h2>
+    <p data-i18n="p3">I když appka nemá vlastní server, při načtení stránky si prohlížeč stáhne pár věcí z internetu. Popisujeme přesně, co a proč:</p>
+    <ul>
+      <li data-i18n="ext1"><strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) – písma Inter a Sora použitá pro vzhled appky. Při načtení stránky váš prohlížeč naváže spojení přímo s Google, což standardně zahrnuje IP adresu a technické údaje prohlížeče (stejně jako u většiny webů používajících Google Fonts). Google Fonts podle veřejně dostupných informací nepoužívá tato spojení k reklamnímu sledování.</li>
+      <li data-i18n="ext2"><strong>jsDelivr CDN</strong> (cdn.jsdelivr.net) – odsud se načítá open-source knihovna SheetJS, která umožňuje import a export souborů Excelu (.xlsx). Stahuje se pouze kód knihovny. Obsah vašich tabulek se přes tato spojení nikam neposílá – veškeré zpracování .xlsx souborů probíhá výhradně ve vašem prohlížeči.</li>
+    </ul>
+    <p data-i18n="p4">Appka si tyto soubory po prvním načtení uloží do mezipaměti prostřednictvím service workeru, takže při dalších návštěvách funguje i bez internetového připojení a tato spojení se neopakují.</p>
+
+    <h2 data-i18n="h4">Cookies</h2>
+    <p data-i18n="p5">Xtally Tabulky sama o sobě nepoužívá žádné cookies. Jediné, co appka ukládá, je localStorage (technicky odlišné od cookies) s vašimi tabulkami a nastavením – to zůstává výhradně na vašem zařízení a neodesílá se s žádnými síťovými požadavky.</p>
+
+    <h2 data-i18n="h5">Jak smazat svoje data</h2>
+    <p data-i18n="p6">Data můžete kdykoliv odstranit smazáním jednotlivých tabulek přímo v appce, vymazáním dat webu ve vašem prohlížeči, nebo odinstalováním appky (pokud jste ji nainstalovali jako PWA). Protože Xtally Tabulky nemá zálohu na žádném serveru, doporučujeme důležité tabulky pravidelně zálohovat pomocí exportu (.xlsx nebo úplná záloha .json) v appce.</p>
+
+    <h2 data-i18n="h6">Děti</h2>
+    <p data-i18n="p7">Appka není cílená na děti. Vzhledem k tomu, že nesbíráme žádná osobní data od nikoho, nesbíráme je vědomě ani od dětí.</p>
+
+    <h2 data-i18n="h7">Změny těchto zásad</h2>
+    <p data-i18n="p8">Tento dokument můžeme čas od času aktualizovat, pokud se změní fungování appky – například přidáním nové externí služby. Aktuální datum poslední aktualizace je uvedeno v úvodu stránky.</p>
+
+    <h2 data-i18n="h8">Kontakt</h2>
+    <p data-i18n="p9">Xtally Tabulky je součástí rodiny bezplatných webových nástrojů <a href="https://synthlucida.com" target="_blank" rel="noopener">SYNTHLUCIDA</a>, po boku sesterské appky <a href="https://webzen2026.github.io/xtally/" target="_blank" rel="noopener">Xtally Documents</a>. Dotazy k appce nebo k těmto zásadám můžete směřovat přes tyto weby.</p>
+
+    <p class="disclaimer" data-i18n="disclaimer">Tento text je srozumitelným popisem toho, jak appka technicky funguje, nikoliv formálním právním poradenstvím. Pokud potřebujete závazné právní stanovisko, například pro komerční nasazení, doporučujeme konzultaci s právníkem.</p>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap footer-inner">
+    <span data-i18n="footerNote">Xtally Tabulky je součástí rodiny bezplatných webových nástrojů</span>&nbsp;<a href="https://synthlucida.com" target="_blank" rel="noopener">SYNTHLUCIDA</a>
+    <a href="./">Xtally Tabulky</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var I18N = {
+    cs: {
+      backLink:"← Zpět na Xtally Tabulky",
+      title:"Zásady ochrany soukromí",
+      updated:"Poslední aktualizace: 15. září 2026",
+      callout:"Xtally Tabulky nemá žádný server ani databázi. Appka běží celá ve vašem prohlížeči a vaše tabulky se nikdy nikam neodesílají.",
+      intro:"Tento dokument srozumitelně popisuje, jaká data appka Xtally Tabulky zpracovává, kde se ukládají a jaké externí služby appka využívá. Cílem je být maximálně konkrétní – žádné vágní formulace.",
+      h1:"Jaká data appka ukládá",
+      p1:"Appka ukládá následující údaje výhradně do úložiště localStorage vašeho prohlížeče, na vašem vlastním zařízení:",
+      li1:"Obsah, vzorce, formátování a název tabulek, které v appce vytvoříte nebo importujete.",
+      li2:"Čas poslední úpravy jednotlivých tabulek.",
+      li3:"Vaše nastavení appky – zvolený jazyk (čeština/angličtina) a světlý/tmavý vzhled.",
+      p2:"Tato data nikdy neopouští vaše zařízení. Xtally Tabulky nemá backend server, na který by se dala odeslat, a appka je ani neodesílá.",
+      h2:"Co appka nedělá",
+      nli1:"Nevyžaduje registraci ani přihlašování a nezná vaši identitu.",
+      nli2:"Neodesílá obsah vašich tabulek na žádný server.",
+      nli3:"Nepoužívá analytické nástroje (např. Google Analytics) ani jiné sledování chování.",
+      nli4:"Nepoužívá reklamní ani sledovací cookies.",
+      nli5:"Neprodává ani nesdílí žádná data s třetími stranami – nemá je totiž k dispozici.",
+      h3:"Externí služby, které appka načítá",
+      p3:"I když appka nemá vlastní server, při načtení stránky si prohlížeč stáhne pár věcí z internetu. Popisujeme přesně, co a proč:",
+      ext1:"<strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) – písma Inter a Sora použitá pro vzhled appky. Při načtení stránky váš prohlížeč naváže spojení přímo s Google, což standardně zahrnuje IP adresu a technické údaje prohlížeče (stejně jako u většiny webů používajících Google Fonts). Google Fonts podle veřejně dostupných informací nepoužívá tato spojení k reklamnímu sledování.",
+      ext2:"<strong>jsDelivr CDN</strong> (cdn.jsdelivr.net) – odsud se načítá open-source knihovna SheetJS, která umožňuje import a export souborů Excelu (.xlsx). Stahuje se pouze kód knihovny. Obsah vašich tabulek se přes tato spojení nikam neposílá – veškeré zpracování .xlsx souborů probíhá výhradně ve vašem prohlížeči.",
+      p4:"Appka si tyto soubory po prvním načtení uloží do mezipaměti prostřednictvím service workeru, takže při dalších návštěvách funguje i bez internetového připojení a tato spojení se neopakují.",
+      h4:"Cookies",
+      p5:"Xtally Tabulky sama o sobě nepoužívá žádné cookies. Jediné, co appka ukládá, je localStorage (technicky odlišné od cookies) s vašimi tabulkami a nastavením – to zůstává výhradně na vašem zařízení a neodesílá se s žádnými síťovými požadavky.",
+      h5:"Jak smazat svoje data",
+      p6:"Data můžete kdykoliv odstranit smazáním jednotlivých tabulek přímo v appce, vymazáním dat webu ve vašem prohlížeči, nebo odinstalováním appky (pokud jste ji nainstalovali jako PWA). Protože Xtally Tabulky nemá zálohu na žádném serveru, doporučujeme důležité tabulky pravidelně zálohovat pomocí exportu (.xlsx nebo úplná záloha .json) v appce.",
+      h6:"Děti",
+      p7:"Appka není cílená na děti. Vzhledem k tomu, že nesbíráme žádná osobní data od nikoho, nesbíráme je vědomě ani od dětí.",
+      h7:"Změny těchto zásad",
+      p8:"Tento dokument můžeme čas od času aktualizovat, pokud se změní fungování appky – například přidáním nové externí služby. Aktuální datum poslední aktualizace je uvedeno v úvodu stránky.",
+      h8:"Kontakt",
+      p9:"Xtally Tabulky je součástí rodiny bezplatných webových nástrojů SYNTHLUCIDA, po boku sesterské appky Xtally Documents. Dotazy k appce nebo k těmto zásadám můžete směřovat přes tyto weby.",
+      disclaimer:"Tento text je srozumitelným popisem toho, jak appka technicky funguje, nikoliv formálním právním poradenstvím. Pokud potřebujete závazné právní stanovisko, například pro komerční nasazení, doporučujeme konzultaci s právníkem.",
+      footerNote:"Xtally Tabulky je součástí rodiny bezplatných webových nástrojů"
+    },
+    en: {
+      backLink:"← Back to Xtally Sheets",
+      title:"Privacy Policy",
+      updated:"Last updated: September 15, 2026",
+      callout:"Xtally Sheets has no server and no database. The app runs entirely in your browser, and your spreadsheets are never uploaded anywhere.",
+      intro:"This page plainly describes what data Xtally Sheets processes, where it's stored, and which external services the app relies on. The goal is to be as concrete as possible — no vague language.",
+      h1:"What data the app stores",
+      p1:"The app stores the following, exclusively in your browser's localStorage, on your own device:",
+      li1:"The content, formulas, formatting and title of spreadsheets you create or import in the app.",
+      li2:"The last-edited timestamp for each spreadsheet.",
+      li3:"Your app settings — chosen language (Czech/English) and light/dark appearance.",
+      p2:"This data never leaves your device. Xtally Sheets has no backend server to send it to, and the app doesn't send it anywhere.",
+      h2:"What the app does not do",
+      nli1:"It doesn't require sign-up or login and has no way to know who you are.",
+      nli2:"It doesn't upload your spreadsheet content to any server.",
+      nli3:"It doesn't use analytics tools (e.g. Google Analytics) or any other behavioral tracking.",
+      nli4:"It doesn't use advertising or tracking cookies.",
+      nli5:"It doesn't sell or share any data with third parties — it simply doesn't have any to share.",
+      h3:"External services the app loads",
+      p3:"Even though the app has no server of its own, your browser does fetch a few things from the internet when the page loads. Here's exactly what and why:",
+      ext1:"<strong>Google Fonts</strong> (fonts.googleapis.com, fonts.gstatic.com) — the Inter and Sora typefaces used for the app's design. When the page loads, your browser connects directly to Google, which typically includes your IP address and basic browser information (as with most websites that use Google Fonts). Based on publicly available information, Google Fonts does not use these connections for ad tracking.",
+      ext2:"<strong>jsDelivr CDN</strong> (cdn.jsdelivr.net) — this is where the open-source library SheetJS is loaded from, enabling import and export of Excel (.xlsx) files. Only library code is downloaded from there. Your spreadsheet content is never sent through these connections — all .xlsx processing happens entirely in your browser.",
+      p4:"After the first visit, the app caches these files via a service worker, so on later visits it works offline too and these connections aren't repeated.",
+      h4:"Cookies",
+      p5:"Xtally Sheets itself doesn't use any cookies. The only thing the app stores is localStorage (technically distinct from cookies) holding your spreadsheets and settings — that stays only on your device and is never sent along with network requests.",
+      h5:"How to delete your data",
+      p6:"You can remove your data at any time by deleting individual spreadsheets inside the app, clearing this site's data in your browser, or uninstalling the app (if you installed it as a PWA). Because Xtally Sheets keeps no backup on any server, we recommend backing up important spreadsheets regularly using export (.xlsx, or a full .json backup) in the app.",
+      h6:"Children",
+      p7:"The app isn't directed at children. Since we don't collect personal data from anyone, we don't knowingly collect it from children either.",
+      h7:"Changes to this policy",
+      p8:"We may update this document from time to time if how the app works changes — for example, by adding a new external service. The current last-updated date is shown at the top of this page.",
+      h8:"Contact",
+      p9:"Xtally Sheets is part of the SYNTHLUCIDA family of free web tools, alongside its sibling app Xtally Documents. Questions about the app or this policy can be directed through those sites.",
+      disclaimer:"This text is a plain-language description of how the app technically works, not formal legal advice. If you need a binding legal opinion, for example for commercial deployment, we recommend consulting a lawyer.",
+      footerNote:"Xtally Sheets is part of the SYNTHLUCIDA family of free web tools"
+    }
+  };
+
+  var currentLang = "cs";
+  var savedLang = null;
+  try { savedLang = localStorage.getItem("xtally_sheets_lang"); } catch(e){}
+  if (savedLang === "cs" || savedLang === "en") currentLang = savedLang;
+  else {
+    var nav = (navigator.language || "cs").toLowerCase();
+    currentLang = nav.indexOf("cs") === 0 || nav.indexOf("sk") === 0 ? "cs" : "en";
+  }
+
+  function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.cs[key] || key; }
+  function applyI18n(){
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      var val = t(key);
+      if (/^(ext1|ext2)$/.test(key)) el.innerHTML = val; else el.textContent = val;
+    });
+    document.querySelectorAll("#langSwitch button").forEach(function(b){ b.classList.toggle("active", b.dataset.lang === currentLang); });
+  }
+  applyI18n();
+
+  document.getElementById("langSwitch").addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-lang]");
+    if (!btn) return;
+    currentLang = btn.dataset.lang;
+    try { localStorage.setItem("xtally_sheets_lang", currentLang); } catch(e2){}
+    applyI18n();
+  });
+
+  var htmlEl = document.documentElement;
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem("xtally_sheets_theme"); } catch(e){}
+  if (savedTheme) htmlEl.setAttribute("data-theme", savedTheme);
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    var current = htmlEl.getAttribute("data-theme");
+    var isDark = current ? current === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var next = isDark ? "light" : "dark";
+    htmlEl.setAttribute("data-theme", next);
+    try { localStorage.setItem("xtally_sheets_theme", next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
