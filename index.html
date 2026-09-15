@@ -330,7 +330,7 @@
   <div class="wrap header-inner">
     <a href="./" class="brand">
       <span class="mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2.4" stroke="#fff" stroke-width="2"/><path d="M4 10h16M10 4v16" stroke="#fff" stroke-width="2"/></svg></span>
-      <span>Xtally <span style="font-weight:600;opacity:.7;font-size:.85em;">Tabulky</span></span>
+      <span>Xtally <span style="font-weight:600;opacity:.7;font-size:.85em;" data-i18n="brandWord">Tabulky</span></span>
     </a>
     <div class="header-actions">
       <a class="synth-link" href="https://synthlucida.com" target="_blank" rel="noopener" data-i18n="synthLink">Součást SYNTHLUCIDA ↗</a>
@@ -913,6 +913,7 @@ var ROWS_DEFAULT = 50, COLS_DEFAULT = 12, ROWS_MAX = 300, COLS_MAX = 26, ROWS_AD
 /* ============ i18n ============ */
 var I18N = {
   cs: {
+    brandWord:"Tabulky", pageTitle:"Xtally Tabulky – Editor tabulek zdarma online (PWA, šablony, offline, Excel)",
     skipLink:"Přeskočit na editor", synthLink:"Součást SYNTHLUCIDA ↗", themeToggle:"Přepnout vzhled", installBtn:"Nainstalovat appku",
     heroKicker:"Nic se nikam neodesílá – vše zůstává v prohlížeči",
     heroTitle:"Tabulka bez <span class=\"accent\">instalování</span> čehokoli",
@@ -974,6 +975,7 @@ var I18N = {
     printTitle:"Tisk tabulky"
   },
   en: {
+    brandWord:"Sheets", pageTitle:"Xtally Sheets – Free Online Spreadsheet Editor (PWA, Templates, Offline, Excel)",
     skipLink:"Skip to editor", synthLink:"Part of SYNTHLUCIDA ↗", themeToggle:"Toggle appearance", installBtn:"Install app",
     heroKicker:"Nothing is ever uploaded — everything stays in your browser",
     heroTitle:"A spreadsheet without <span class=\"accent\">installing</span> anything",
@@ -1049,6 +1051,7 @@ else if (!urlParams.get("lang")) {
 function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || (I18N.cs[key] || key); }
 function applyI18n(){
   document.documentElement.lang = currentLang;
+  document.title = t("pageTitle");
   document.querySelectorAll("[data-i18n]").forEach(function(el){ el.textContent = t(el.getAttribute("data-i18n")); });
   document.querySelectorAll("[data-i18n-html]").forEach(function(el){ el.innerHTML = t(el.getAttribute("data-i18n-html")); });
   document.querySelectorAll("[data-i18n-title]").forEach(function(el){ el.title = t(el.getAttribute("data-i18n-title")); });

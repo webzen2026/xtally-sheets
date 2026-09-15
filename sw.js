@@ -1,5 +1,5 @@
 // Xtally Sheets service worker — cache-first app shell, offline support
-const CACHE_NAME = "xtally-sheets-cache-v1";
+const CACHE_NAME = "xtally-sheets-cache-v2";
 const APP_SHELL = [
   "./",
   "./index.html",

@@ -85,7 +85,7 @@
   <div class="wrap header-inner">
     <a href="./" class="brand">
       <span class="mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2.4" stroke="#fff" stroke-width="2"/><path d="M4 10h16M10 4v16" stroke="#fff" stroke-width="2"/></svg></span>
-      <span>Xtally <span style="font-weight:600;opacity:.7;font-size:.85em;">Tabulky</span></span>
+      <span>Xtally <span style="font-weight:600;opacity:.7;font-size:.85em;" data-i18n="brandWord">Tabulky</span></span>
     </a>
     <div class="header-actions">
       <div class="lang-switch" id="langSwitch" role="group" aria-label="Jazyk / Language">
@@ -157,7 +157,7 @@
 <footer class="site">
   <div class="wrap footer-inner">
     <span data-i18n="footerNote">Xtally Tabulky je součástí rodiny bezplatných webových nástrojů</span>&nbsp;<a href="https://synthlucida.com" target="_blank" rel="noopener">SYNTHLUCIDA</a>
-    <a href="./">Xtally Tabulky</a>
+    <a href="./" data-i18n="footerBrand">Xtally Tabulky</a>
   </div>
 </footer>
 
@@ -166,6 +166,7 @@
   "use strict";
   var I18N = {
     cs: {
+      brandWord:"Tabulky", footerBrand:"Xtally Tabulky", pageTitle:"Zásady ochrany soukromí – Xtally Tabulky",
       backLink:"← Zpět na Xtally Tabulky",
       title:"Zásady ochrany soukromí",
       updated:"Poslední aktualizace: 15. září 2026",
@@ -202,6 +203,7 @@
       footerNote:"Xtally Tabulky je součástí rodiny bezplatných webových nástrojů"
     },
     en: {
+      brandWord:"Sheets", footerBrand:"Xtally Sheets", pageTitle:"Privacy Policy – Xtally Sheets",
       backLink:"← Back to Xtally Sheets",
       title:"Privacy Policy",
       updated:"Last updated: September 15, 2026",
@@ -240,9 +242,11 @@
   };
 
   var currentLang = "cs";
+  var urlParams = new URLSearchParams(location.search);
   var savedLang = null;
   try { savedLang = localStorage.getItem("xtally_sheets_lang"); } catch(e){}
-  if (savedLang === "cs" || savedLang === "en") currentLang = savedLang;
+  if (urlParams.get("lang") === "en" || urlParams.get("lang") === "cs") currentLang = urlParams.get("lang");
+  else if (savedLang === "cs" || savedLang === "en") currentLang = savedLang;
   else {
     var nav = (navigator.language || "cs").toLowerCase();
     currentLang = nav.indexOf("cs") === 0 || nav.indexOf("sk") === 0 ? "cs" : "en";
@@ -251,6 +255,7 @@
   function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.cs[key] || key; }
   function applyI18n(){
     document.documentElement.lang = currentLang;
+    document.title = t("pageTitle");
     document.querySelectorAll("[data-i18n]").forEach(function(el){
       var key = el.getAttribute("data-i18n");
       var val = t(key);
