@@ -190,11 +190,14 @@
   .sidebar-head .btn{ width:100%; }
   .sidebar-scroll{ flex:1; overflow-y:auto; padding:8px; }
   .doc-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
-  .doc-item{ padding:10px 12px; border-radius:10px; cursor:pointer; display:flex; flex-direction:column; gap:2px; }
+  .doc-item{ padding:10px 6px 10px 12px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px; }
   .doc-item:hover{ background:var(--bg); }
   .doc-item.active{ background:var(--grid-select); }
+  .doc-item .doc-item-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
   .doc-item .title{ font-size:.88rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .doc-item .meta{ font-size:.72rem; color:var(--ink-soft); }
+  .doc-item .doc-del{ flex-shrink:0; opacity:.45; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:7px; color:var(--ink-soft); background:transparent; border:none; cursor:pointer; font-size:.82rem; line-height:1; transition:opacity .15s ease, background .15s ease, color .15s ease; }
+  .doc-item .doc-del:hover{ opacity:1; background:var(--danger); color:#fff; }
   .doc-empty{ padding:20px 12px; text-align:center; color:var(--ink-soft); font-size:.85rem; }
   .sidebar-foot{ padding:12px 16px; border-top:1px solid var(--line); display:flex; gap:8px; flex-wrap:wrap; }
   .sidebar-backdrop{ display:none; }
@@ -965,7 +968,7 @@ var I18N = {
     exportPdfTitle:"PDF / tisk", exportPdfDesc:" Otevře dialog tisku prohlížeče – zvolte „Uložit jako PDF“.",
     exportJsonTitle:"Kompletní záloha (.json)", exportJsonDesc:" Všechny listy, vzorce i formátování – pro pozdější obnovení přímo v Xtally Tabulky.",
     importModalTitle:"Import souboru", dropZoneText:"Přetáhněte sem soubor .xlsx, .csv nebo .json, nebo klikněte pro výběr",
-    deleteModalTitle:"Smazat tabulku?", deleteModalBody:"Tuto akci nelze vrátit zpět.", cancel:"Zrušit", "delete":"Smazat",
+    deleteModalTitle:"Smazat tabulku?", deleteModalBody:"Tuto akci nelze vrátit zpět.", cancel:"Zrušit", "delete":"Smazat", deleteDocAria:"Smazat tabulku",
     restoreModalTitle:"Obnovit zálohu?", restoreModalBody:"Tento soubor obsahuje kompletní zálohu Xtally Tabulky. Otevře se jako nová tabulka, vaše ostatní tabulky zůstanou beze změny.", restoreConfirm:"Obnovit",
     sheetWord:"List", toastTemplate:"Šablona „{0}“ vytvořena", toastDuplicated:"Tabulka zduplikována", toastDeleted:"Tabulka smazána",
     toastXlsxExported:"Export .xlsx dokončen", toastCsvExported:"Export CSV dokončen", toastJsonExported:"Záloha stažena",
@@ -1027,7 +1030,7 @@ var I18N = {
     exportPdfTitle:"PDF / print", exportPdfDesc:" Opens your browser's print dialog — choose \"Save as PDF\".",
     exportJsonTitle:"Full backup (.json)", exportJsonDesc:" All sheets, formulas and formatting — for restoring later, right in Xtally Sheets.",
     importModalTitle:"Import a file", dropZoneText:"Drop an .xlsx, .csv, or .json file here, or click to choose",
-    deleteModalTitle:"Delete this spreadsheet?", deleteModalBody:"This action cannot be undone.", cancel:"Cancel", "delete":"Delete",
+    deleteModalTitle:"Delete this spreadsheet?", deleteModalBody:"This action cannot be undone.", cancel:"Cancel", "delete":"Delete", deleteDocAria:"Delete spreadsheet",
     restoreModalTitle:"Restore backup?", restoreModalBody:"This file contains a full Xtally Sheets backup. It will open as a new spreadsheet — your other spreadsheets stay unchanged.", restoreConfirm:"Restore",
     sheetWord:"Sheet", toastTemplate:"Template \"{0}\" created", toastDuplicated:"Spreadsheet duplicated", toastDeleted:"Spreadsheet deleted",
     toastXlsxExported:".xlsx export complete", toastCsvExported:"CSV export complete", toastJsonExported:"Backup downloaded",
@@ -1177,6 +1180,7 @@ var editingRef = null;
 var isDragging = false;
 var history = [], future = [];
 var HISTORY_MAX = 60;
+var requestDeleteHandler = null;
 
 function activeSheet(){ return wb.sheets[wb.activeSheet]; }
 function normSel(){ return { c0:Math.min(sel.c0,sel.c1), c1:Math.max(sel.c0,sel.c1), r0:Math.min(sel.r0,sel.r1), r1:Math.max(sel.r0,sel.r1) }; }
@@ -1275,10 +1279,14 @@ function renderDocList(){
     var dt = new Date(d.updatedAt);
     var locale = CORE.currentLang === "cs" ? "cs-CZ" : "en-US";
     var dateStr = dt.toLocaleDateString(locale, { day:"2-digit", month:"2-digit" }) + " " + dt.toLocaleTimeString(locale, { hour:"2-digit", minute:"2-digit" });
-    li.innerHTML = '<span class="title"></span><span class="meta"></span>';
+    li.innerHTML = '<span class="doc-item-text"><span class="title"></span><span class="meta"></span></span><button type="button" class="doc-del" aria-label="' + t("deleteDocAria") + '" title="' + t("deleteDocAria") + '">✕</button>';
     li.querySelector(".title").textContent = d.title || t("untitled");
     li.querySelector(".meta").textContent = dateStr;
     li.addEventListener("click", function(){ if (d.id !== currentId){ saveCurrentDoc(); selectDoc(d.id); } closeSidebarMobile(); });
+    li.querySelector(".doc-del").addEventListener("click", function(e){
+      e.stopPropagation();
+      if (requestDeleteHandler) requestDeleteHandler(d.id); else deleteDoc(d.id);
+    });
     docList.appendChild(li);
   });
 }
@@ -1671,6 +1679,7 @@ window.__APP_STATE = {
   get sel(){ return sel; }, set sel(v){ sel = v; },
   get editingRef(){ return editingRef; }, set editingRef(v){ editingRef = v; },
   get isDragging(){ return isDragging; }, set isDragging(v){ isDragging = v; },
+  get requestDeleteHandler(){ return requestDeleteHandler; }, set requestDeleteHandler(v){ requestDeleteHandler = v; },
   activeSheet: activeSheet, normSel: normSel, clampSelection: clampSelection,
   beginMutation: beginMutation, doUndo: doUndo, doRedo: doRedo,
   loadDocs: loadDocs, persistDocs: persistDocs, findDoc: findDoc, createWorkbook: createWorkbook,
@@ -2117,6 +2126,7 @@ document.getElementById("confirmRestore").addEventListener("click", function(){
 });
 
 var pendingDeleteId = null;
+S.requestDeleteHandler = function(id){ pendingDeleteId = id; openModal(deleteModal); };
 document.getElementById("cancelDelete").addEventListener("click", function(){ pendingDeleteId = null; closeModal(deleteModal); });
 document.getElementById("confirmDelete").addEventListener("click", function(){
   if (pendingDeleteId){ S.deleteDoc(pendingDeleteId); pendingDeleteId = null; }
