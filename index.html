@@ -124,7 +124,7 @@
   .btn-sm{ padding:7px 14px; font-size:.84rem; }
 
   /* ============ Hero / landing ============ */
-  .hero{ padding-block:56px 40px; text-align:center; }
+  .hero{ padding-block:14px 10px; text-align:center; }
   .hero .kicker{ display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); padding:6px 14px; border-radius:999px; font-size:.8rem; color:var(--ink-soft); margin-bottom:18px; }
   .hero .kicker .dot{ width:7px; height:7px; border-radius:50%; background:var(--success); flex-shrink:0; }
   .hero h1{ font-size:clamp(1.9rem,4.6vw,3.1rem); line-height:1.12; margin:0 0 16px; font-weight:800; }
@@ -164,6 +164,22 @@
   .faq-item[open] summary:after{ content:"–"; }
   .faq-item p{ margin:10px 0 0; color:var(--ink-soft); font-size:.92rem; }
 
+  .hero-details summary{ list-style:none; cursor:pointer; }
+  .hero-details summary::-webkit-details-marker{ display:none; }
+  .hero-summary-row{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .hero-body{ padding-top:18px; }
+  .section-details summary{ list-style:none; cursor:pointer; }
+  .section-details summary::-webkit-details-marker{ display:none; }
+  .section-summary-row{ display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .section-toggle-hint{ display:inline-flex; align-items:center; gap:5px; font-size:.8rem; font-weight:600; color:var(--ink-soft); border:1px solid var(--line); padding:6px 12px; border-radius:999px; flex-shrink:0; }
+  .section-toggle-hint svg{ width:13px; height:13px; transition:transform .18s ease; }
+  .section-details[open] .section-toggle-hint svg{ transform:rotate(180deg); }
+  .section-body{ padding-top:20px; }
+  .relax-link{ display:flex; align-items:center; gap:7px; font-size:.8rem; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:8px 2px 2px; margin-top:4px; border-top:1px solid var(--line); min-width:0; }
+  .relax-link:hover{ color:var(--accent); }
+  .relax-link svg{ width:15px; height:15px; flex-shrink:0; color:var(--accent); }
+  .relax-link span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
   footer.site{ border-top:1px solid var(--line); padding-block:36px; margin-top:20px; }
   .footer-inner{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
   .footer-note{ font-size:.84rem; color:var(--ink-soft); }
@@ -199,7 +215,9 @@
   .doc-item .doc-del{ flex-shrink:0; opacity:.45; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:7px; color:var(--ink-soft); background:transparent; border:none; cursor:pointer; font-size:.82rem; line-height:1; transition:opacity .15s ease, background .15s ease, color .15s ease; }
   .doc-item .doc-del:hover{ opacity:1; background:var(--danger); color:#fff; }
   .doc-empty{ padding:20px 12px; text-align:center; color:var(--ink-soft); font-size:.85rem; }
-  .sidebar-foot{ padding:12px 16px; border-top:1px solid var(--line); display:flex; gap:8px; flex-wrap:wrap; }
+  .sidebar-foot{ padding:12px 16px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:8px; }
+  .sidebar-foot-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .sidebar-foot-row .btn{ flex:1; min-width:0; }
   .sidebar-backdrop{ display:none; }
 
   .editor-col{ display:flex; flex-direction:column; min-width:0; }
@@ -354,19 +372,31 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="kicker"><span class="dot"></span><span data-i18n="heroKicker">Nic se nikam neodesílá – vše zůstává v prohlížeči</span></div>
-    <h1 data-i18n-html="heroTitle">Tabulka bez <span class="accent">instalování</span> čehokoli</h1>
-    <p class="lede" data-i18n="heroLede">Xtally Tabulky je odlehčený editor tabulek přímo v prohlížeči. Rozpočet, faktura, evidence nebo vlastní vzorce – hotovo za pár minut. Umí otevřít i uložit skutečný soubor Excelu (.xlsx).</p>
-    <div class="cta-row">
-      <a href="#app" class="btn btn-primary" data-i18n="heroCtaStart">Začít psát zdarma</a>
-      <button class="btn btn-ghost" type="button" id="heroTemplatesBtn" data-i18n="heroCtaTemplates">Prohlédnout šablony</button>
-    </div>
-    <div class="trust-row">
-      <span data-i18n="trust1">✓ Funguje offline</span>
-      <span data-i18n="trust2">✓ Ukládá se automaticky</span>
-      <span data-i18n="trust3">✓ Import a export Excel (.xlsx)</span>
-      <span data-i18n="trust4">✓ Responzivní na mobilu i počítači</span>
-    </div>
+    <details class="hero-details" id="heroDetails">
+      <summary>
+        <div class="hero-summary-row">
+          <div class="kicker" style="margin-bottom:0;"><span class="dot"></span><span data-i18n="heroKicker">Nic se nikam neodesílá – vše zůstává v prohlížeči</span></div>
+          <span class="section-toggle-hint">
+            <span id="heroToggleLabel" data-i18n="heroToggleMore">O aplikaci a šablony</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="hero-body">
+        <h1 data-i18n-html="heroTitle">Tabulka bez <span class="accent">instalování</span> čehokoli</h1>
+        <p class="lede" data-i18n="heroLede">Xtally Tabulky je odlehčený editor tabulek přímo v prohlížeči. Rozpočet, faktura, evidence nebo vlastní vzorce – hotovo za pár minut. Umí otevřít i uložit skutečný soubor Excelu (.xlsx).</p>
+        <div class="cta-row">
+          <a href="#app" class="btn btn-primary" data-i18n="heroCtaStart">Začít psát zdarma</a>
+          <button class="btn btn-ghost" type="button" id="heroTemplatesBtn" data-i18n="heroCtaTemplates">Prohlédnout šablony</button>
+        </div>
+        <div class="trust-row">
+          <span data-i18n="trust1">✓ Funguje offline</span>
+          <span data-i18n="trust2">✓ Ukládá se automaticky</span>
+          <span data-i18n="trust3">✓ Import a export Excel (.xlsx)</span>
+          <span data-i18n="trust4">✓ Responzivní na mobilu i počítači</span>
+        </div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -381,8 +411,14 @@
         <ul class="doc-list" id="docList"></ul>
       </div>
       <div class="sidebar-foot">
-        <button class="btn btn-ghost btn-sm" id="templatesBtn" type="button" data-i18n="browseTemplates">Šablony</button>
-        <button class="btn btn-ghost btn-sm" id="importBtn" type="button" data-i18n="importBtnLabel">Import</button>
+        <div class="sidebar-foot-row">
+          <button class="btn btn-ghost btn-sm" id="templatesBtn" type="button" data-i18n="browseTemplates">Šablony</button>
+          <button class="btn btn-ghost btn-sm" id="importBtn" type="button" data-i18n="importBtnLabel">Import</button>
+        </div>
+        <a class="relax-link" href="https://relaxplayer.eu" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span data-i18n="relaxLink">Klidná chillout hudba k psaní ↗</span>
+        </a>
       </div>
     </aside>
 
@@ -488,86 +524,130 @@
 
 <section class="feature-strip">
   <div class="wrap">
-    <div class="section-head">
-      <h2 data-i18n="howH2">Jak to funguje</h2>
-      <p data-i18n="howP">Čtyři kroky mezi vámi a hotovou tabulkou.</p>
-    </div>
-    <div class="steps">
-      <div class="step"><div class="num">1</div><h3 data-i18n="step1h">Vyberte šablonu</h3><p data-i18n="step1p">Nebo začněte s prázdnou tabulkou – přesně podle potřeby.</p></div>
-      <div class="step"><div class="num">2</div><h3 data-i18n="step2h">Vyplňte a počítejte</h3><p data-i18n="step2p">Vzorce jako SUM, PRŮMĚR nebo KDYŽ počítají samy za vás.</p></div>
-      <div class="step"><div class="num">3</div><h3 data-i18n="step3h">Ukládá se samo</h3><p data-i18n="step3p">Xtally Tabulky průběžně ukládá vše přímo na tomto zařízení – nic se neztratí.</p></div>
-      <div class="step"><div class="num">4</div><h3 data-i18n="step4h">Export nebo stažení</h3><p data-i18n="step4p">Excel (.xlsx), CSV, PDF na tisk, nebo kompletní záloha jedním klikem.</p></div>
-    </div>
+    <details class="section-details" id="stepsDetails">
+      <summary>
+        <div class="section-summary-row">
+          <h2 data-i18n="howH2" style="margin:0;">Jak to funguje</h2>
+          <span class="section-toggle-hint">
+            <span id="stepsToggleLabel" data-i18n="stepsToggleMore">Zobrazit</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="section-body">
+        <div class="section-head" style="margin-top:0;">
+          <p data-i18n="howP">Čtyři kroky mezi vámi a hotovou tabulkou.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><h3 data-i18n="step1h">Vyberte šablonu</h3><p data-i18n="step1p">Nebo začněte s prázdnou tabulkou – přesně podle potřeby.</p></div>
+          <div class="step"><div class="num">2</div><h3 data-i18n="step2h">Vyplňte a počítejte</h3><p data-i18n="step2p">Vzorce jako SUM, PRŮMĚR nebo KDYŽ počítají samy za vás.</p></div>
+          <div class="step"><div class="num">3</div><h3 data-i18n="step3h">Ukládá se samo</h3><p data-i18n="step3p">Xtally Tabulky průběžně ukládá vše přímo na tomto zařízení – nic se neztratí.</p></div>
+          <div class="step"><div class="num">4</div><h3 data-i18n="step4h">Export nebo stažení</h3><p data-i18n="step4p">Excel (.xlsx), CSV, PDF na tisk, nebo kompletní záloha jedním klikem.</p></div>
+        </div>
+      </div>
+    </details>
   </div>
 </section>
 
 <section class="feature-strip">
   <div class="wrap">
-    <div class="section-head">
-      <h2 data-i18n="featH2">Vše, co běžný člověk potřebuje k tabulkám</h2>
-      <p data-i18n="featP">Xtally Tabulky záměrně vynechává složitosti velkých kancelářských balíků – jen to, co doopravdy použijete.</p>
-    </div>
-    <div class="feature-grid">
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4V4Zm0 5.33h16M4 14.67h16M9.33 4v16M14.67 4v16" stroke="currentColor" stroke-width="1.6"/></svg></div><h3 data-i18n="f1h">Vzorce a funkce</h3><p data-i18n="f1p">SUM, PRŮMĚR, MIN, MAX, KDYŽ a další – s okamžitým přepočtem a odhalením kruhových odkazů.</p></div>
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3 data-i18n="f2h">Formátování buněk</h3><p data-i18n="f2p">Tučné, kurzíva, barvy, zarovnání, formát čísla, měny a procenta.</p></div>
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v4H4V6Zm0 8h10v4H4v-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><h3 data-i18n="f3h">Hotové šablony</h3><p data-i18n="f3p">Rozpočet, faktura, evidence výdajů, úkoly a další – v češtině i angličtině.</p></div>
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-i18n="f4h">Import a export Excelu</h3><p data-i18n="f4p">Otevřete existující soubor .xlsx a uložte zpět jako skutečný Excel soubor.</p></div>
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-i18n="f5h">Export libovolným způsobem</h3><p data-i18n="f5p">PDF přes tisk, CSV pro jiné programy, nebo kompletní záloha v jednom souboru.</p></div>
-      <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4.5 8-11V6l-8-3-8 3v5c0 6.5 8 11 8 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><h3 data-i18n="f6h">Vaše data zůstávají vaše</h3><p data-i18n="f6p">Tabulky se ukládají jen v tomto prohlížeči. Nic se nikam neodesílá ani neukládá na server.</p></div>
-    </div>
+    <details class="section-details" id="featuresDetails">
+      <summary>
+        <div class="section-summary-row">
+          <h2 data-i18n="featH2" style="margin:0;">Vše, co běžný člověk potřebuje k tabulkám</h2>
+          <span class="section-toggle-hint">
+            <span id="featuresToggleLabel" data-i18n="featuresToggleMore">Zobrazit</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="section-body">
+        <div class="section-head" style="margin-top:0;">
+          <p data-i18n="featP">Xtally Tabulky záměrně vynechává složitosti velkých kancelářských balíků – jen to, co doopravdy použijete.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4V4Zm0 5.33h16M4 14.67h16M9.33 4v16M14.67 4v16" stroke="currentColor" stroke-width="1.6"/></svg></div><h3 data-i18n="f1h">Vzorce a funkce</h3><p data-i18n="f1p">SUM, PRŮMĚR, MIN, MAX, KDYŽ a další – s okamžitým přepočtem a odhalením kruhových odkazů.</p></div>
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><h3 data-i18n="f2h">Formátování buněk</h3><p data-i18n="f2p">Tučné, kurzíva, barvy, zarovnání, formát čísla, měny a procenta.</p></div>
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v4H4V6Zm0 8h10v4H4v-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><h3 data-i18n="f3h">Hotové šablony</h3><p data-i18n="f3p">Rozpočet, faktura, evidence výdajů, úkoly a další – v češtině i angličtině.</p></div>
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-i18n="f4h">Import a export Excelu</h3><p data-i18n="f4p">Otevřete existující soubor .xlsx a uložte zpět jako skutečný Excel soubor.</p></div>
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3 data-i18n="f5h">Export libovolným způsobem</h3><p data-i18n="f5p">PDF přes tisk, CSV pro jiné programy, nebo kompletní záloha v jednom souboru.</p></div>
+          <div class="feature-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4.5 8-11V6l-8-3-8 3v5c0 6.5 8 11 8 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><h3 data-i18n="f6h">Vaše data zůstávají vaše</h3><p data-i18n="f6p">Tabulky se ukládají jen v tomto prohlížeči. Nic se nikam neodesílá ani neukládá na server.</p></div>
+        </div>
+      </div>
+    </details>
   </div>
 </section>
 
 <section class="feature-strip">
   <div class="wrap">
-    <div class="section-head">
-      <h2 data-i18n="privH2">Soukromí a vaše data</h2>
-    </div>
-    <div class="privacy-panel">
-      <p data-i18n="privP1">Xtally Tabulky nemá žádný server ani databázi. Veškeré zpracování dat probíhá přímo ve vašem prohlížeči.</p>
-      <ul>
-        <li data-i18n="privLi1">Vaše tabulky se ukládají jen lokálně (localStorage) na tomto zařízení a nikam se neodesílají.</li>
-        <li data-i18n="privLi2">Import souboru .xlsx nebo CSV zpracuje knihovna přímo v prohlížeči, soubor nikdy neopustí vaše zařízení.</li>
-        <li data-i18n="privLi3">Export do PDF probíhá přes tiskovou funkci prohlížeče.</li>
-        <li data-i18n="privLi4">Appka nepoužívá sledovací cookies, analytiku ani reklamní partnery.</li>
-        <li data-i18n="privLi5">Protože vaše data žijí jen v prohlížeči, důležité tabulky si pravidelně zálohujte (tlačítko „Export").</li>
-      </ul>
-      <p><a href="./privacy.html" data-i18n="privacyFullLink">Přečíst kompletní zásady ochrany soukromí →</a></p>
-    </div>
+    <details class="section-details" id="privacyDetails">
+      <summary>
+        <div class="section-summary-row">
+          <h2 data-i18n="privH2" style="margin:0;">Soukromí a vaše data</h2>
+          <span class="section-toggle-hint">
+            <span id="privacyToggleLabel" data-i18n="privacyToggleMore">Zobrazit</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="section-body">
+        <div class="privacy-panel">
+          <p data-i18n="privP1">Xtally Tabulky nemá žádný server ani databázi. Veškeré zpracování dat probíhá přímo ve vašem prohlížeči.</p>
+          <ul>
+            <li data-i18n="privLi1">Vaše tabulky se ukládají jen lokálně (localStorage) na tomto zařízení a nikam se neodesílají.</li>
+            <li data-i18n="privLi2">Import souboru .xlsx nebo CSV zpracuje knihovna přímo v prohlížeči, soubor nikdy neopustí vaše zařízení.</li>
+            <li data-i18n="privLi3">Export do PDF probíhá přes tiskovou funkci prohlížeče.</li>
+            <li data-i18n="privLi4">Appka nepoužívá sledovací cookies, analytiku ani reklamní partnery.</li>
+            <li data-i18n="privLi5">Protože vaše data žijí jen v prohlížeči, důležité tabulky si pravidelně zálohujte (tlačítko „Export").</li>
+          </ul>
+          <p><a href="./privacy.html" data-i18n="privacyFullLink">Přečíst kompletní zásady ochrany soukromí →</a></p>
+        </div>
+      </div>
+    </details>
   </div>
 </section>
 
 <section class="feature-strip">
   <div class="wrap">
-    <div class="section-head">
-      <h2 data-i18n="faqH2">Časté dotazy</h2>
-    </div>
-    <div class="faq">
-      <details class="faq-item">
-        <summary data-i18n="faq1q">Je Xtally Tabulky opravdu zdarma?</summary>
-        <p data-i18n="faq1a">Ano, appka je zcela zdarma, bez registrace, předplatného nebo skrytých poplatků.</p>
-      </details>
-      <details class="faq-item">
-        <summary data-i18n="faq2q">Kam se ukládají moje tabulky?</summary>
-        <p data-i18n="faq2a">Přímo ve vašem prohlížeči (localStorage). Nikam se neodesílají – pokud vymažete data prohlížeče, tabulky zmizí, proto si důležité soubory zálohujte nebo exportujte.</p>
-      </details>
-      <details class="faq-item">
-        <summary data-i18n="faq3q">Umí appka otevřít soubor z Excelu?</summary>
-        <p data-i18n="faq3a">Ano, přes tlačítko Import můžete nahrát existující soubor .xlsx a upravit ho. Export pak vytvoří skutečný .xlsx soubor, který Excel otevře bez problémů.</p>
-      </details>
-      <details class="faq-item">
-        <summary data-i18n="faq4q">Jaké vzorce appka podporuje?</summary>
-        <p data-i18n="faq4a">Základní sadu, se kterou vystačíte pro běžné tabulky: SUM, AVERAGE, MIN, MAX, COUNT, COUNTA, IF, ROUND, ABS, AND, OR, NOT, CONCATENATE a pár dalších – žádné pokročilé maticové vzorce ani kontingenční tabulky.</p>
-      </details>
-      <details class="faq-item">
-        <summary data-i18n="faq5q">Funguje appka i bez internetu?</summary>
-        <p data-i18n="faq5a">Po prvním načtení a nainstalování ano – Xtally Tabulky je PWA (Progressive Web App) a hlavní obsah si ukládá do mezipaměti zařízení.</p>
-      </details>
-      <details class="faq-item">
-        <summary data-i18n="faq6q">Souvisí Xtally Tabulky se SYNTHLUCIDA?</summary>
-        <p data-i18n-html="faq6a">Ano, je to samostatný projekt z rodiny bezplatných webových nástrojů <a href="https://synthlucida.com" target="_blank" rel="noopener">SYNTHLUCIDA</a> – stejně jako <a href="https://webzen2026.github.io/xtally/" target="_blank" rel="noopener">Xtally Documents</a>.</p>
-      </details>
-    </div>
+    <details class="section-details" id="faqDetails">
+      <summary>
+        <div class="section-summary-row">
+          <h2 data-i18n="faqH2" style="margin:0;">Časté dotazy</h2>
+          <span class="section-toggle-hint">
+            <span id="faqToggleLabel" data-i18n="faqToggleMore">Zobrazit</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="section-body">
+        <div class="faq">
+          <details class="faq-item">
+            <summary data-i18n="faq1q">Je Xtally Tabulky opravdu zdarma?</summary>
+            <p data-i18n="faq1a">Ano, appka je zcela zdarma, bez registrace, předplatného nebo skrytých poplatků.</p>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq2q">Kam se ukládají moje tabulky?</summary>
+            <p data-i18n="faq2a">Přímo ve vašem prohlížeči (localStorage). Nikam se neodesílají – pokud vymažete data prohlížeče, tabulky zmizí, proto si důležité soubory zálohujte nebo exportujte.</p>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq3q">Umí appka otevřít soubor z Excelu?</summary>
+            <p data-i18n="faq3a">Ano, přes tlačítko Import můžete nahrát existující soubor .xlsx a upravit ho. Export pak vytvoří skutečný .xlsx soubor, který Excel otevře bez problémů.</p>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq4q">Jaké vzorce appka podporuje?</summary>
+            <p data-i18n="faq4a">Základní sadu, se kterou vystačíte pro běžné tabulky: SUM, AVERAGE, MIN, MAX, COUNT, COUNTA, IF, ROUND, ABS, AND, OR, NOT, CONCATENATE a pár dalších – žádné pokročilé maticové vzorce ani kontingenční tabulky.</p>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq5q">Funguje appka i bez internetu?</summary>
+            <p data-i18n="faq5a">Po prvním načtení a nainstalování ano – Xtally Tabulky je PWA (Progressive Web App) a hlavní obsah si ukládá do mezipaměti zařízení.</p>
+          </details>
+          <details class="faq-item">
+            <summary data-i18n="faq6q">Souvisí Xtally Tabulky se SYNTHLUCIDA?</summary>
+            <p data-i18n-html="faq6a">Ano, je to samostatný projekt z rodiny bezplatných webových nástrojů <a href="https://synthlucida.com" target="_blank" rel="noopener">SYNTHLUCIDA</a> – stejně jako <a href="https://webzen2026.github.io/xtally/" target="_blank" rel="noopener">Xtally Documents</a>.</p>
+          </details>
+        </div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -922,6 +1002,12 @@ var I18N = {
     heroTitle:"Tabulka bez <span class=\"accent\">instalování</span> čehokoli",
     heroLede:"Xtally Tabulky je odlehčený editor tabulek přímo v prohlížeči. Rozpočet, faktura, evidence nebo vlastní vzorce – hotovo za pár minut. Umí otevřít i uložit skutečný soubor Excelu (.xlsx).",
     heroCtaStart:"Začít psát zdarma", heroCtaTemplates:"Prohlédnout šablony",
+    heroToggleMore:"O aplikaci a šablony", heroToggleLess:"Skrýt",
+    relaxLink:"Klidná chillout hudba k psaní ↗",
+    stepsToggleMore:"Zobrazit kroky", stepsToggleLess:"Skrýt kroky",
+    featuresToggleMore:"Zobrazit funkce", featuresToggleLess:"Skrýt funkce",
+    privacyToggleMore:"Zobrazit podrobnosti", privacyToggleLess:"Skrýt podrobnosti",
+    faqToggleMore:"Zobrazit dotazy", faqToggleLess:"Skrýt dotazy",
     trust1:"✓ Funguje offline", trust2:"✓ Ukládá se automaticky", trust3:"✓ Import a export Excel (.xlsx)", trust4:"✓ Responzivní na mobilu i počítači",
     newDoc:"+ Nová tabulka", browseTemplates:"Šablony", importBtnLabel:"Import", exportBtnLabel:"Export",
     untitled:"Bez názvu", saved:"Uloženo", saving:"Ukládání…",
@@ -984,6 +1070,12 @@ var I18N = {
     heroTitle:"A spreadsheet without <span class=\"accent\">installing</span> anything",
     heroLede:"Xtally Sheets is a lightweight spreadsheet editor right in your browser. Budget, invoice, tracker, or your own formulas — done in minutes. It can open and save a real Excel (.xlsx) file.",
     heroCtaStart:"Start writing for free", heroCtaTemplates:"Browse templates",
+    heroToggleMore:"About & templates", heroToggleLess:"Hide",
+    relaxLink:"Calm chillout music for writing ↗",
+    stepsToggleMore:"Show steps", stepsToggleLess:"Hide steps",
+    featuresToggleMore:"Show features", featuresToggleLess:"Hide features",
+    privacyToggleMore:"Show details", privacyToggleLess:"Hide details",
+    faqToggleMore:"Show questions", faqToggleLess:"Hide questions",
     trust1:"✓ Works offline", trust2:"✓ Autosaves automatically", trust3:"✓ Import & export Excel (.xlsx)", trust4:"✓ Responsive on mobile and desktop",
     newDoc:"+ New spreadsheet", browseTemplates:"Templates", importBtnLabel:"Import", exportBtnLabel:"Export",
     untitled:"Untitled", saved:"Saved", saving:"Saving…",
@@ -2065,6 +2157,11 @@ document.getElementById("langSwitch").addEventListener("click", function(e){
   CORE.setLang(btn.dataset.lang);
   try { localStorage.setItem("xtally_sheets_lang", btn.dataset.lang); } catch(e2){}
   applyI18n(); renderTemplateGrid(); S.renderDocList(); S.renderAll();
+  if (typeof updateHeroToggleLabel === "function") updateHeroToggleLabel();
+  if (typeof updateStepsToggleLabel === "function") updateStepsToggleLabel();
+  if (typeof updateFeaturesToggleLabel === "function") updateFeaturesToggleLabel();
+  if (typeof updatePrivacyToggleLabel === "function") updatePrivacyToggleLabel();
+  if (typeof updateFaqToggleLabel === "function") updateFaqToggleLabel();
 });
 
 var themeToggle = document.getElementById("themeToggle");
@@ -2380,6 +2477,23 @@ var savedCurrent = null;
 try { savedCurrent = localStorage.getItem("xtally_sheets_current_v1"); } catch(e){}
 var startId = (savedCurrent && S.findDoc(savedCurrent)) ? savedCurrent : S.docs[0].id;
 applyI18n();
+function setupCollapsible(detailsId, labelId, moreKey, lessKey){
+  var d = document.getElementById(detailsId);
+  var label = document.getElementById(labelId);
+  function update(){
+    if (!d || !label) return;
+    var key = d.open ? lessKey : moreKey;
+    label.setAttribute("data-i18n", key);
+    label.textContent = t(key);
+  }
+  if (d){ d.addEventListener("toggle", update); update(); }
+  return update;
+}
+var updateHeroToggleLabel = setupCollapsible("heroDetails", "heroToggleLabel", "heroToggleMore", "heroToggleLess");
+var updateStepsToggleLabel = setupCollapsible("stepsDetails", "stepsToggleLabel", "stepsToggleMore", "stepsToggleLess");
+var updateFeaturesToggleLabel = setupCollapsible("featuresDetails", "featuresToggleLabel", "featuresToggleMore", "featuresToggleLess");
+var updatePrivacyToggleLabel = setupCollapsible("privacyDetails", "privacyToggleLabel", "privacyToggleMore", "privacyToggleLess");
+var updateFaqToggleLabel = setupCollapsible("faqDetails", "faqToggleLabel", "faqToggleMore", "faqToggleLess");
 renderTemplateGrid();
 S.selectDoc(startId);
 })();
