@@ -201,11 +201,11 @@
 
   /* ============ App shell ============ */
   #app{ scroll-margin-top:70px; }
-  .app-shell{ display:grid; grid-template-columns:230px 1fr; gap:0; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--paper); box-shadow:var(--shadow); min-height:600px; }
-  .sidebar{ background:var(--card); border-right:1px solid var(--line); display:flex; flex-direction:column; }
+  .app-shell{ display:grid; grid-template-columns:230px 1fr; gap:0; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--paper); box-shadow:var(--shadow); height:600px; }
+  .sidebar{ background:var(--card); border-right:1px solid var(--line); display:flex; flex-direction:column; min-height:0; }
   .sidebar-head{ padding:16px; border-bottom:1px solid var(--line); }
   .sidebar-head .btn{ width:100%; }
-  .sidebar-scroll{ flex:1; overflow-y:auto; padding:8px; }
+  .sidebar-scroll{ flex:1; overflow-y:auto; overscroll-behavior:contain; padding:8px; }
   .doc-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
   .doc-item{ padding:10px 6px 10px 12px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px; }
   .doc-item:hover{ background:var(--bg); }
@@ -221,7 +221,7 @@
   .sidebar-foot-row .btn{ flex:1; min-width:0; }
   .sidebar-backdrop{ display:none; }
 
-  .editor-col{ display:flex; flex-direction:column; min-width:0; }
+  .editor-col{ display:flex; flex-direction:column; min-width:0; min-height:0; }
   .doc-title-row{ display:flex; align-items:center; gap:10px; padding:12px 20px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
   .doc-title-input{ border:none; background:transparent; font-family:'Sora',sans-serif; font-weight:700; font-size:1.06rem; color:var(--ink); flex:1; min-width:120px; padding:6px 8px; border-radius:8px; }
   .doc-title-input:focus{ outline:2px solid var(--accent); background:var(--bg); }
@@ -247,7 +247,7 @@
   .formula-input{ flex:1; border:1px solid var(--line); border-radius:7px; padding:6px 10px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.84rem; background:var(--card); color:var(--ink); }
   .formula-input:focus{ outline:2px solid var(--accent); }
 
-  .grid-scroll{ flex:1; overflow:auto; position:relative; background:var(--paper); }
+  .grid-scroll{ flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; position:relative; background:var(--paper); }
   table.grid{ border-collapse:separate; border-spacing:0; table-layout:fixed; }
   table.grid th, table.grid td{ border-right:1px solid var(--grid-line); border-bottom:1px solid var(--grid-line); padding:0; }
   table.grid thead th{ position:sticky; top:0; z-index:3; background:var(--grid-header); color:var(--ink-soft); font-size:.74rem; font-weight:700; text-align:center; height:26px; width:88px; min-width:88px; }
@@ -286,7 +286,7 @@
   body.focus-mode footer.site{ display:none !important; }
   body.focus-mode #app{ scroll-margin-top:0; }
   body.focus-mode .wrap.app-wrap{ max-width:none; padding-inline:0; }
-  body.focus-mode .app-shell{ border-radius:0; border-left:none; border-right:none; min-height:calc(100vh - 54px); }
+  body.focus-mode .app-shell{ border-radius:0; border-left:none; border-right:none; height:calc(100vh - 54px); }
 
   /* ============ Modals ============ */
   .modal-backdrop{ position:fixed; inset:0; background:rgba(10,20,18,.5); display:flex; align-items:center; justify-content:center; padding:20px; z-index:150; }
@@ -314,7 +314,7 @@
   .drop-zone:hover{ border-color:var(--accent); color:var(--accent); }
 
   @media (max-width:880px){
-    .app-shell{ grid-template-columns:1fr; min-height:0; }
+    .app-shell{ grid-template-columns:1fr; height:620px; }
     .sidebar{ position:fixed; top:0; left:0; bottom:0; width:min(84vw,300px); z-index:120; transform:translateX(-100%); transition:transform .25s ease; border-right:1px solid var(--line); box-shadow:var(--shadow); }
     .sidebar.open{ transform:translateX(0); }
     .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(10,10,20,.5); z-index:110; }
@@ -336,6 +336,10 @@
     .toolbar select.sel-size{ width:64px; }
     /* Formulářový řádek (vzorec buňky) má stejný problém se zoomem na iOS */
     .formula-input{ font-size:16px; }
+    /* Větší dotykové plochy tlačítek na mobilu (blíž doporučeným ~44x44px) */
+    .toolbar button.tb{ width:40px; height:40px; }
+    .toolbar button.tb svg{ width:18px; height:18px; }
+    .icon-btn{ width:42px; height:42px; }
   }
   @media (max-width:880px){
     /* Sjednocené rozvržení rozbalovacích nabídek (Jak to funguje / Vše co potřebujete /
@@ -384,7 +388,7 @@
         <button type="button" data-lang="cs">CS</button>
         <button type="button" data-lang="en">EN</button>
       </div>
-      <button class="icon-btn" id="themeToggle" type="button" data-i18n-title="themeToggle" title="Přepnout vzhled">
+      <button class="icon-btn" id="themeToggle" type="button" data-i18n-title="themeToggle" data-i18n-aria="themeToggle" title="Přepnout vzhled" aria-label="Přepnout vzhled"
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/></svg>
       </button>
       <button class="btn btn-primary btn-sm" id="installBtn" type="button" hidden>
@@ -454,10 +458,10 @@
         </button>
         <input type="text" class="doc-title-input" id="docTitleInput" data-i18n-placeholder="untitled" placeholder="Bez názvu">
         <div class="save-state"><span class="dot" id="saveDot"></span><span id="saveLabel" data-i18n="saved">Uloženo</span></div>
-        <button class="icon-btn" id="focusModeBtn" type="button" data-i18n-title="focusMode" title="Režim soustředění">
+        <button class="icon-btn" id="focusModeBtn" type="button" data-i18n-title="focusMode" data-i18n-aria="focusMode" title="Režim soustředění" aria-label="Režim soustředění">
           <svg viewBox="0 0 24 24" fill="none"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="icon-btn" id="printBtn" type="button" data-i18n-title="printBtn" title="Tisk">
+        <button class="icon-btn" id="printBtn" type="button" data-i18n-title="printBtn" data-i18n-aria="printBtn" title="Tisk" aria-label="Tisk"
           <svg viewBox="0 0 24 24" fill="none"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2M6 14h12v7H6v-7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
         </button>
         <button class="btn btn-ghost btn-sm" id="exportBtn" type="button" data-i18n="exportBtnLabel">Export</button>
@@ -465,17 +469,17 @@
 
       <div class="toolbar" id="toolbar">
         <div class="grp">
-          <button class="tb" data-act="undo" data-i18n-title="undo" title="Zpět"><svg viewBox="0 0 24 24" fill="none"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <button class="tb" data-act="redo" data-i18n-title="redo" title="Vpřed"><svg viewBox="0 0 24 24" fill="none"><path d="m15 7 5 5-5 5M20 12H10A6 6 0 0 0 10 24h1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="tb" data-act="undo" data-i18n-title="undo" data-i18n-aria="undo" title="Zpět" aria-label="Zpět"><svg viewBox="0 0 24 24" fill="none"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="tb" data-act="redo" data-i18n-title="redo" data-i18n-aria="redo" title="Vpřed" aria-label="Vpřed"><svg viewBox="0 0 24 24" fill="none"><path d="m15 7 5 5-5 5M20 12H10A6 6 0 0 0 10 24h1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="grp">
-          <button class="tb" data-act="bold" data-i18n-title="bold" title="Tučné"><b>B</b></button>
-          <button class="tb" data-act="italic" data-i18n-title="italic" title="Kurzíva"><i>I</i></button>
-          <button class="tb" data-act="underline" data-i18n-title="underline" title="Podtržené"><u>U</u></button>
-          <button class="tb" data-act="strike" data-i18n-title="strike" title="Přeškrtnuté"><s>S</s></button>
+          <button class="tb" data-act="bold" data-i18n-title="bold" data-i18n-aria="bold" title="Tučné" aria-label="Tučné"><b>B</b></button>
+          <button class="tb" data-act="italic" data-i18n-title="italic" data-i18n-aria="italic" title="Kurzíva" aria-label="Kurzíva"><i>I</i></button>
+          <button class="tb" data-act="underline" data-i18n-title="underline" data-i18n-aria="underline" title="Podtržené" aria-label="Podtržené"><u>U</u></button>
+          <button class="tb" data-act="strike" data-i18n-title="strike" data-i18n-aria="strike" title="Přeškrtnuté" aria-label="Přeškrtnuté"><s>S</s></button>
         </div>
         <div class="grp">
-          <select class="sel-font" id="fontSelect" data-i18n-title="fontFamily" title="Písmo">
+          <select class="sel-font" id="fontSelect" data-i18n-title="fontFamily" data-i18n-aria="fontFamily" title="Písmo" aria-label="Písmo"
             <option value="Inter">Inter</option>
             <option value="Georgia, serif">Georgia</option>
             <option value="'Times New Roman', serif">Times New Roman</option>
@@ -483,7 +487,7 @@
             <option value="'Courier New', monospace">Courier New</option>
             <option value="Verdana, sans-serif">Verdana</option>
           </select>
-          <select class="sel-size" id="sizeSelect" data-i18n-title="fontSize" title="Velikost">
+          <select class="sel-size" id="sizeSelect" data-i18n-title="fontSize" data-i18n-aria="fontSize" title="Velikost" aria-label="Velikost"
             <option value="11">11</option>
             <option value="12" selected>12</option>
             <option value="13">13</option>
@@ -496,12 +500,12 @@
           </select>
         </div>
         <div class="grp">
-          <button class="tb" data-act="align-left" data-i18n-title="alignLeft" title="Zarovnat vlevo"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-          <button class="tb" data-act="align-center" data-i18n-title="alignCenter" title="Na střed"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-          <button class="tb" data-act="align-right" data-i18n-title="alignRight" title="Zarovnat vpravo"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M10 12h10M6 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button class="tb" data-act="align-left" data-i18n-title="alignLeft" data-i18n-aria="alignLeft" title="Zarovnat vlevo" aria-label="Zarovnat vlevo"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button class="tb" data-act="align-center" data-i18n-title="alignCenter" data-i18n-aria="alignCenter" title="Na střed" aria-label="Na střed"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button class="tb" data-act="align-right" data-i18n-title="alignRight" data-i18n-aria="alignRight" title="Zarovnat vpravo" aria-label="Zarovnat vpravo"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M10 12h10M6 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         </div>
         <div class="grp">
-          <select class="sel-fmt" id="numFmtSelect" data-i18n-title="numberFormat" title="Formát čísla">
+          <select class="sel-fmt" id="numFmtSelect" data-i18n-title="numberFormat" data-i18n-aria="numberFormat" title="Formát čísla" aria-label="Formát čísla"
             <option value="general" data-i18n="fmtGeneral">Obecné</option>
             <option value="number" data-i18n="fmtNumber">Číslo</option>
             <option value="currency" data-i18n="fmtCurrency">Měna</option>
@@ -510,16 +514,16 @@
           </select>
         </div>
         <div class="grp">
-          <input type="color" id="textColorInput" value="#132420" data-i18n-title="textColor" title="Barva textu">
-          <input type="color" id="bgColorInput" value="#fde68a" data-i18n-title="fillColor" title="Barva výplně">
-          <button class="tb" data-act="clear-fill" data-i18n-title="clearFill" title="Bez výplně">⌀</button>
-          <button class="tb" data-act="border" data-i18n-title="borderToggle" title="Ohraničení">▦</button>
+          <input type="color" id="textColorInput" value="#132420" data-i18n-title="textColor" data-i18n-aria="textColor" title="Barva textu" aria-label="Barva textu">
+          <input type="color" id="bgColorInput" value="#fde68a" data-i18n-title="fillColor" data-i18n-aria="fillColor" title="Barva výplně" aria-label="Barva výplně">
+          <button class="tb" data-act="clear-fill" data-i18n-title="clearFill" data-i18n-aria="clearFill" title="Bez výplně" aria-label="Bez výplně">⌀</button>
+          <button class="tb" data-act="border" data-i18n-title="borderToggle" data-i18n-aria="borderToggle" title="Ohraničení" aria-label="Ohraničení">▦</button>
         </div>
         <div class="grp">
-          <button class="tb" data-act="row-add" data-i18n-title="rowAdd" title="Vložit řádek">+R</button>
-          <button class="tb" data-act="row-del" data-i18n-title="rowDel" title="Smazat řádek">−R</button>
-          <button class="tb" data-act="col-add" data-i18n-title="colAdd" title="Vložit sloupec">+C</button>
-          <button class="tb" data-act="col-del" data-i18n-title="colDel" title="Smazat sloupec">−C</button>
+          <button class="tb" data-act="row-add" data-i18n-title="rowAdd" data-i18n-aria="rowAdd" title="Vložit řádek" aria-label="Vložit řádek">+R</button>
+          <button class="tb" data-act="row-del" data-i18n-title="rowDel" data-i18n-aria="rowDel" title="Smazat řádek" aria-label="Smazat řádek">−R</button>
+          <button class="tb" data-act="col-add" data-i18n-title="colAdd" data-i18n-aria="colAdd" title="Vložit sloupec" aria-label="Vložit sloupec">+C</button>
+          <button class="tb" data-act="col-del" data-i18n-title="colDel" data-i18n-aria="colDel" title="Smazat sloupec" aria-label="Smazat sloupec">−C</button>
         </div>
       </div>
 
@@ -1175,6 +1179,7 @@ function applyI18n(){
   document.querySelectorAll("[data-i18n]").forEach(function(el){ el.textContent = t(el.getAttribute("data-i18n")); });
   document.querySelectorAll("[data-i18n-html]").forEach(function(el){ el.innerHTML = t(el.getAttribute("data-i18n-html")); });
   document.querySelectorAll("[data-i18n-title]").forEach(function(el){ el.title = t(el.getAttribute("data-i18n-title")); });
+  document.querySelectorAll("[data-i18n-aria]").forEach(function(el){ el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria"))); });
   document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el){ el.placeholder = t(el.getAttribute("data-i18n-placeholder")); });
   document.querySelectorAll("#langSwitch button").forEach(function(b){ b.classList.toggle("active", b.dataset.lang === currentLang); });
 }
