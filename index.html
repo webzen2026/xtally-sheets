@@ -250,10 +250,10 @@
   .grid-scroll{ flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; position:relative; background:var(--paper); }
   table.grid{ border-collapse:separate; border-spacing:0; table-layout:fixed; }
   table.grid th, table.grid td{ border-right:1px solid var(--grid-line); border-bottom:1px solid var(--grid-line); padding:0; }
-  table.grid thead th{ position:sticky; top:0; z-index:3; background:var(--grid-header); color:var(--ink-soft); font-size:.74rem; font-weight:700; text-align:center; height:26px; width:88px; min-width:88px; }
-  table.grid thead th.corner{ left:0; z-index:4; width:42px; min-width:42px; }
-  table.grid tbody th{ position:sticky; left:0; z-index:2; background:var(--grid-header); color:var(--ink-soft); font-size:.72rem; font-weight:600; text-align:center; width:42px; min-width:42px; height:26px; }
-  table.grid td{ height:26px; max-width:280px; overflow:hidden; }
+  table.grid thead th{ position:sticky; top:0; z-index:3; background:var(--grid-header); color:var(--ink-soft); font-size:.74rem; font-weight:700; text-align:center; height:26px; }
+  table.grid thead th.corner{ left:0; z-index:4; }
+  table.grid tbody th{ position:sticky; left:0; z-index:2; background:var(--grid-header); color:var(--ink-soft); font-size:.72rem; font-weight:600; text-align:center; height:26px; }
+  table.grid td{ height:26px; overflow:hidden; }
   table.grid td .cellwrap{ height:100%; width:100%; padding:2px 6px; font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; outline:none; }
   table.grid td.num .cellwrap{ text-align:right; }
   table.grid td.editing .cellwrap{ white-space:pre; overflow:visible; background:var(--card); box-shadow:0 0 0 2px var(--grid-select-line); position:relative; z-index:5; }
@@ -268,6 +268,10 @@
   table.grid td.align-center .cellwrap{ text-align:center; }
   table.grid td.align-right .cellwrap{ text-align:right; }
   table.grid td.bordered{ box-shadow:inset 0 0 0 1px var(--ink-soft); }
+  .col-resize-handle{ position:absolute; top:0; right:-3px; width:6px; height:100%; cursor:col-resize; z-index:6; touch-action:none; }
+  .col-resize-handle:hover, .col-resize-handle.resizing{ background:var(--accent); opacity:.55; }
+  .row-resize-handle{ position:absolute; left:0; bottom:-3px; width:100%; height:6px; cursor:row-resize; z-index:6; touch-action:none; }
+  .row-resize-handle:hover, .row-resize-handle.resizing{ background:var(--accent); opacity:.55; }
 
   .grid-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px; border-top:1px solid var(--line); flex-wrap:wrap; }
   .sheet-tabs{ display:flex; align-items:center; gap:4px; overflow-x:auto; flex:1; min-width:0; }
@@ -1028,6 +1032,8 @@ var colToLetter = FE.colToLetter, parseCellRef = FE.parseCellRef, parseFormula =
     evaluateAST = FE.evaluateAST, ERR = FE.ERR, isErr = FE.isErr, fmtStr = FE.fmtStr, isoDate = FE.isoDate;
 
 var ROWS_DEFAULT = 50, COLS_DEFAULT = 12, ROWS_MAX = 300, COLS_MAX = 26, ROWS_ADD = 25, COLS_ADD = 6;
+var COL_WIDTH_DEFAULT = 88, COL_WIDTH_MIN = 40, COL_WIDTH_MAX = 480;
+var ROW_HEIGHT_DEFAULT = 26, ROW_HEIGHT_MIN = 20, ROW_HEIGHT_MAX = 240;
 
 /* ============ i18n ============ */
 var I18N = {
@@ -1193,7 +1199,7 @@ function applyI18n(){
 
 /* ============ Cell / sheet helpers ============ */
 function emptyCell(){ return { f:null, v:"", fmt:"general", b:false, i:false, u:false, s:false, align:null, color:null, bg:null, border:false, font:null, size:null }; }
-function newSheet(name){ return { name: name, rows: ROWS_DEFAULT, cols: COLS_DEFAULT, cells: {} }; }
+function newSheet(name){ return { name: name, rows: ROWS_DEFAULT, cols: COLS_DEFAULT, cells: {}, colWidths: {}, rowHeights: {} }; }
 function coerceEntry(text){
   // returns { f, v } — f set (incl. leading "=") if formula, else v holds the typed value coerced
   if (text === "" || text === null || text === undefined) return { f: null, v: "" };
@@ -1284,6 +1290,7 @@ function cellComputedValue(sheet, ref){
 /* expose to global app scope */
 window.__APP_CORE = {
   ROWS_DEFAULT, COLS_DEFAULT, ROWS_MAX, COLS_MAX, ROWS_ADD, COLS_ADD,
+  COL_WIDTH_DEFAULT, COL_WIDTH_MIN, COL_WIDTH_MAX, ROW_HEIGHT_DEFAULT, ROW_HEIGHT_MIN, ROW_HEIGHT_MAX,
   I18N: I18N, t: t, applyI18n: applyI18n,
   get currentLang(){ return currentLang; }, setLang: function(l){ currentLang = l; },
   emptyCell: emptyCell, newSheet: newSheet, coerceEntry: coerceEntry, rawEditText: rawEditText,
@@ -1299,6 +1306,8 @@ var t = CORE.t, applyI18n = CORE.applyI18n, colToLetter = CORE.colToLetter, pars
     cellComputedValue = CORE.cellComputedValue, emptyCell = CORE.emptyCell, newSheet = CORE.newSheet,
     coerceEntry = CORE.coerceEntry, rawEditText = CORE.rawEditText;
 var ROWS_MAX = CORE.ROWS_MAX, COLS_MAX = CORE.COLS_MAX, ROWS_ADD = CORE.ROWS_ADD, COLS_ADD = CORE.COLS_ADD;
+var COL_WIDTH_DEFAULT = CORE.COL_WIDTH_DEFAULT, COL_WIDTH_MIN = CORE.COL_WIDTH_MIN, COL_WIDTH_MAX = CORE.COL_WIDTH_MAX;
+var ROW_HEIGHT_DEFAULT = CORE.ROW_HEIGHT_DEFAULT, ROW_HEIGHT_MIN = CORE.ROW_HEIGHT_MIN, ROW_HEIGHT_MAX = CORE.ROW_HEIGHT_MAX;
 
 /* ============ State ============ */
 var docs = [];
@@ -1380,7 +1389,7 @@ function selectDoc(id){
   try { localStorage.setItem(CURRENT_KEY, id); } catch(e){}
   var d = findDoc(id); if (!d) return;
   wb = d;
-  wb.sheets.forEach(function(s){ if (typeof s.rows !== "number") s.rows = CORE.ROWS_DEFAULT; if (typeof s.cols !== "number") s.cols = CORE.COLS_DEFAULT; if (!s.cells) s.cells = {}; });
+  wb.sheets.forEach(function(s){ if (typeof s.rows !== "number") s.rows = CORE.ROWS_DEFAULT; if (typeof s.cols !== "number") s.cols = CORE.COLS_DEFAULT; if (!s.cells) s.cells = {}; if (!s.colWidths) s.colWidths = {}; if (!s.rowHeights) s.rowHeights = {}; });
   if (typeof wb.activeSheet !== "number" || wb.activeSheet >= wb.sheets.length) wb.activeSheet = 0;
   docTitleInput.value = wb.title;
   editingRef = null; history = []; future = [];
@@ -1474,15 +1483,22 @@ function renderAll(){
   renderStatusBar();
   renderSheetTabs();
 }
+function colWidth(sheet, c){ return (sheet.colWidths && sheet.colWidths[c]) || COL_WIDTH_DEFAULT; }
+function rowHeight(sheet, r){ return (sheet.rowHeights && sheet.rowHeights[r]) || ROW_HEIGHT_DEFAULT; }
 function renderGrid(){
   var sheet = activeSheet();
   var s = normSel();
+  var totalW = 42;
+  var colgroup = '<colgroup><col style="width:42px">';
+  for (var cg = 0; cg < sheet.cols; cg++){ var cgw = colWidth(sheet, cg); totalW += cgw; colgroup += '<col style="width:' + cgw + 'px">'; }
+  colgroup += '</colgroup>';
   var head = '<thead><tr><th class="corner"></th>';
-  for (var c = 0; c < sheet.cols; c++) head += '<th data-col="' + c + '">' + colToLetter(c) + '</th>';
+  for (var c = 0; c < sheet.cols; c++) head += '<th data-col="' + c + '">' + colToLetter(c) + '<span class="col-resize-handle" data-col="' + c + '"></span></th>';
   head += '</tr></thead>';
   var body = '<tbody>';
   for (var r = 0; r < sheet.rows; r++){
-    body += '<tr><th data-row="' + r + '">' + (r+1) + '</th>';
+    var rh = rowHeight(sheet, r);
+    body += '<tr><th data-row="' + r + '" style="height:' + rh + 'px">' + (r+1) + '<span class="row-resize-handle" data-row="' + r + '"></span></th>';
     for (var cc = 0; cc < sheet.cols; cc++){
       var ref = colToLetter(cc) + (r+1);
       var cell = sheet.cells[ref];
@@ -1503,7 +1519,7 @@ function renderGrid(){
         if (cell.s) classes.push("fmt-strike");
         if (cell.border) classes.push("bordered");
       }
-      var style = "";
+      var style = "height:" + rh + "px;";
       if (cell){
         if (cell.color) style += "color:" + cell.color + ";";
         if (cell.bg) style += "background-color:" + cell.bg + ";";
@@ -1511,12 +1527,52 @@ function renderGrid(){
         if (cell.size) style += "font-size:" + cell.size + "px;";
       }
       var displayText = ref === editingRef ? rawEditText(cell) : formatDisplay(val, cell ? cell.fmt : "general");
-      body += '<td data-ref="' + ref + '" data-row="' + r + '" data-col="' + cc + '" class="' + classes.join(" ") + '"' + (style ? ' style="' + style + '"' : '') + '><div class="cellwrap">' + escapeHtml(displayText) + '</div></td>';
+      body += '<td data-ref="' + ref + '" data-row="' + r + '" data-col="' + cc + '" class="' + classes.join(" ") + '" style="' + style + '"><div class="cellwrap">' + escapeHtml(displayText) + '</div></td>';
     }
     body += '</tr>';
   }
   body += '</tbody>';
-  gridTable.innerHTML = head + body;
+  gridTable.innerHTML = colgroup + head + body;
+  gridTable.style.width = totalW + "px";
+}
+function setColWidth(c, w){
+  var sheet = activeSheet();
+  beginMutation();
+  if (!sheet.colWidths) sheet.colWidths = {};
+  sheet.colWidths[c] = Math.max(COL_WIDTH_MIN, Math.min(COL_WIDTH_MAX, Math.round(w)));
+  scheduleSave();
+  renderAll();
+}
+function setRowHeight(r, h){
+  var sheet = activeSheet();
+  beginMutation();
+  if (!sheet.rowHeights) sheet.rowHeights = {};
+  sheet.rowHeights[r] = Math.max(ROW_HEIGHT_MIN, Math.min(ROW_HEIGHT_MAX, Math.round(h)));
+  scheduleSave();
+  renderAll();
+}
+var __autoFitCanvas = null;
+function autoFitColumn(c){
+  var sheet = activeSheet();
+  if (!__autoFitCanvas) __autoFitCanvas = document.createElement("canvas");
+  var ctx = __autoFitCanvas.getContext("2d");
+  var baseFont = "13px Inter, system-ui, sans-serif";
+  ctx.font = baseFont;
+  var maxW = 0;
+  for (var r = 0; r < sheet.rows; r++){
+    var ref = colToLetter(c) + (r+1);
+    var cell = sheet.cells[ref];
+    if (!cell) continue;
+    var val = cellComputedValue(sheet, ref);
+    var text = formatDisplay(val, cell.fmt || "general");
+    if (!text) continue;
+    ctx.font = cell.size ? (cell.size + "px Inter, system-ui, sans-serif") : baseFont;
+    var w = ctx.measureText(text).width;
+    if (cell.b) w *= 1.06;
+    if (w > maxW) maxW = w;
+  }
+  var padded = maxW ? Math.ceil(maxW) + 22 : COL_WIDTH_DEFAULT;
+  setColWidth(c, padded);
 }
 function renderFormulaBar(){
   var sheet = activeSheet();
@@ -1821,6 +1877,9 @@ window.__APP_STATE = {
   setTextColor: setTextColor, setBgColor: setBgColor, clearFill: clearFill, toggleBorder: toggleBorder, clearSelectionContent: clearSelectionContent,
   doRowAdd: doRowAdd, doRowDel: doRowDel, doColAdd: doColAdd, doColDel: doColDel, growSheetRows: growSheetRows, growSheetCols: growSheetCols,
   updateToolbarActiveStates: updateToolbarActiveStates,
+  setColWidth: setColWidth, setRowHeight: setRowHeight, autoFitColumn: autoFitColumn,
+  COL_WIDTH_MIN: COL_WIDTH_MIN, COL_WIDTH_MAX: COL_WIDTH_MAX, COL_WIDTH_DEFAULT: COL_WIDTH_DEFAULT,
+  ROW_HEIGHT_MIN: ROW_HEIGHT_MIN, ROW_HEIGHT_MAX: ROW_HEIGHT_MAX, ROW_HEIGHT_DEFAULT: ROW_HEIGHT_DEFAULT,
   gridTable: gridTable, gridScroll: gridScroll, formulaInput: formulaInput, docTitleInput: docTitleInput, docList: docList,
   numFmtSelect: numFmtSelect, fontSelect: fontSelect, sizeSelect: sizeSelect, textColorInput: textColorInput, bgColorInput: bgColorInput,
   closeSidebarMobile: closeSidebarMobile
@@ -1955,6 +2014,140 @@ var TEMPLATES = [
       ["Toner", 5, 35, "=B5*C5"],
       ["Binders", 25, 3, "=B6*C6"],[],
       ["", "", H("Total value"), "=SUM(D4:D6)"]
+    ]) ] } },
+  { id:"savings", icon:"🏦",
+    cs:{ name:"Cíl spoření", desc:"Cílová částka, vklady, zbývá", sheets:[ sheetFromMatrix("Spoření", [
+      [H("Cíl spoření")],[],
+      ["Cílová částka:", 50000], ["Naspořeno k dnešnímu dni:", 12000],
+      [H("Zbývá naspořit"), "=B3-B4"],[],
+      [H("Měsíc"), H("Vklad")],
+      ["Leden", 2000], ["Únor", 2500], ["Březen", 1800],[],
+      [H("Vklady celkem"), "=SUM(B8:B10)"]
+    ]) ] },
+    en:{ name:"Savings Goal", desc:"Target amount, deposits, remaining", sheets:[ sheetFromMatrix("Savings", [
+      [H("Savings Goal")],[],
+      ["Target amount:", 5000], ["Saved so far:", 1200],
+      [H("Remaining to save"), "=B3-B4"],[],
+      [H("Month"), H("Deposit")],
+      ["January", 200], ["February", 250], ["March", 180],[],
+      [H("Total deposits"), "=SUM(B8:B10)"]
+    ]) ] } },
+  { id:"habits", icon:"🔥",
+    cs:{ name:"Sledování návyků", desc:"Týdenní přehled, 1 = splněno", sheets:[ sheetFromMatrix("Návyky", [
+      [H("Sledování návyků")],[],
+      [H("Návyk"), H("Po"), H("Út"), H("St"), H("Čt"), H("Pá"), H("So"), H("Ne"), H("Celkem")],
+      ["Cvičení", 1,1,0,1,1,0,0, "=SUM(B4:H4)"],
+      ["Čtení", 1,0,1,1,0,1,1, "=SUM(B5:H5)"],
+      ["Meditace", 0,1,1,0,1,1,0, "=SUM(B6:H6)"],[],
+      [H("Součet za týden"), "", "", "", "", "", "", "", "=SUM(I4:I6)"]
+    ]) ] },
+    en:{ name:"Habit Tracker", desc:"Weekly overview, 1 = done", sheets:[ sheetFromMatrix("Habits", [
+      [H("Habit Tracker")],[],
+      [H("Habit"), H("Mon"), H("Tue"), H("Wed"), H("Thu"), H("Fri"), H("Sat"), H("Sun"), H("Total")],
+      ["Exercise", 1,1,0,1,1,0,0, "=SUM(B4:H4)"],
+      ["Reading", 1,0,1,1,0,1,1, "=SUM(B5:H5)"],
+      ["Meditation", 0,1,1,0,1,1,0, "=SUM(B6:H6)"],[],
+      [H("Weekly total"), "", "", "", "", "", "", "", "=SUM(I4:I6)"]
+    ]) ] } },
+  { id:"timesheet", icon:"⏱️",
+    cs:{ name:"Pracovní výkaz", desc:"Den, popis práce, hodiny", sheets:[ sheetFromMatrix("Výkaz", [
+      [H("Pracovní výkaz – týden")],[],
+      [H("Den"), H("Popis práce"), H("Hodiny")],
+      ["Pondělí", "Vývoj projektu", 8], ["Úterý", "Schůzky, e-maily", 6.5], ["Středa", "Vývoj projektu", 8],
+      ["Čtvrtek", "Testování", 7], ["Pátek", "Dokumentace", 5.5],[],
+      [H("Celkem hodin"), "", "=SUM(C4:C8)"]
+    ]) ] },
+    en:{ name:"Weekly Time Sheet", desc:"Day, task, hours worked", sheets:[ sheetFromMatrix("Time Sheet", [
+      [H("Weekly Time Sheet")],[],
+      [H("Day"), H("Task"), H("Hours")],
+      ["Monday", "Project development", 8], ["Tuesday", "Meetings, emails", 6.5], ["Wednesday", "Project development", 8],
+      ["Thursday", "Testing", 7], ["Friday", "Documentation", 5.5],[],
+      [H("Total hours"), "", "=SUM(C4:C8)"]
+    ]) ] } },
+  { id:"billing", icon:"🧮",
+    cs:{ name:"Hodinová fakturace", desc:"Sazba, hodiny, částka k úhradě", sheets:[ sheetFromMatrix("Fakturace", [
+      [H("Hodinová fakturace")],[],
+      ["Klient:", "Jméno klienta"], ["Hodinová sazba:", 500],[],
+      [H("Datum"), H("Popis"), H("Hodiny"), H("Částka")],
+      ["01.03.2026", "Návrh a konzultace", 3, "=C7*B4"],
+      ["03.03.2026", "Implementace", 5, "=C8*B4"],
+      ["05.03.2026", "Testování a opravy", 2.5, "=C9*B4"],[],
+      [H("Celkem k fakturaci"), "", "", "=SUM(D7:D9)"]
+    ]) ] },
+    en:{ name:"Hourly Billing", desc:"Rate, hours, amount due", sheets:[ sheetFromMatrix("Billing", [
+      [H("Hourly Billing")],[],
+      ["Client:", "Client name"], ["Hourly rate:", 50],[],
+      [H("Date"), H("Description"), H("Hours"), H("Amount")],
+      ["2026-03-01", "Design and consulting", 3, "=C7*B4"],
+      ["2026-03-03", "Implementation", 5, "=C8*B4"],
+      ["2026-03-05", "Testing and fixes", 2.5, "=C9*B4"],[],
+      [H("Total due"), "", "", "=SUM(D7:D9)"]
+    ]) ] } },
+  { id:"splitbills", icon:"🏠",
+    cs:{ name:"Rozdělení nákladů", desc:"Společné účty rozpočítané na osobu", sheets:[ sheetFromMatrix("Rozdělení", [
+      [H("Rozdělení nákladů")],[],
+      ["Počet osob:", 3],[],
+      [H("Položka"), H("Částka"), H("Na osobu")],
+      ["Nájem", 15000, "=B6/B3"], ["Energie", 3000, "=B7/B3"], ["Internet", 600, "=B8/B3"],[],
+      [H("Celkem"), "=SUM(B6:B8)", "=SUM(C6:C8)"]
+    ]) ] },
+    en:{ name:"Bill Splitter", desc:"Shared costs split per person", sheets:[ sheetFromMatrix("Split", [
+      [H("Bill Splitter")],[],
+      ["Number of people:", 3],[],
+      [H("Item"), H("Amount"), H("Per person")],
+      ["Rent", 1500, "=B6/B3"], ["Utilities", 300, "=B7/B3"], ["Internet", 60, "=B8/B3"],[],
+      [H("Total"), "=SUM(B6:B8)", "=SUM(C6:C8)"]
+    ]) ] } },
+  { id:"mileage", icon:"🚗",
+    cs:{ name:"Kniha jízd", desc:"Datum, trasa, kilometry, účel", sheets:[ sheetFromMatrix("Jízdy", [
+      [H("Kniha jízd")],[],
+      [H("Datum"), H("Trasa"), H("Km"), H("Účel")],
+      ["01.03.2026", "Domov – Kancelář", 18, "Dojíždění"],
+      ["04.03.2026", "Kancelář – Klient", 45, "Obchodní jednání"],
+      ["07.03.2026", "Klient – Kancelář", 45, "Obchodní jednání"],[],
+      [H("Celkem km"), "", "=SUM(C4:C6)"]
+    ]) ] },
+    en:{ name:"Mileage Log", desc:"Date, route, distance, purpose", sheets:[ sheetFromMatrix("Mileage", [
+      [H("Mileage Log")],[],
+      [H("Date"), H("Route"), H("Miles"), H("Purpose")],
+      ["2026-03-01", "Home – Office", 12, "Commute"],
+      ["2026-03-04", "Office – Client", 28, "Business meeting"],
+      ["2026-03-07", "Client – Office", 28, "Business meeting"],[],
+      [H("Total miles"), "", "=SUM(C4:C6)"]
+    ]) ] } },
+  { id:"eventbudget", icon:"🎉",
+    cs:{ name:"Rozpočet akce", desc:"Odhad vs. skutečnost, zbývá z rozpočtu", sheets:[ sheetFromMatrix("Rozpočet akce", [
+      [H("Rozpočet akce")],[],
+      ["Název akce:", "Svatba / Oslava"], ["Datum:", "01.06.2026"], ["Rozpočet celkem:", 80000],[],
+      [H("Položka"), H("Odhad"), H("Skutečnost")],
+      ["Místo konání", 25000, ""], ["Catering", 30000, ""], ["Výzdoba", 5000, ""],
+      ["Hudba / DJ", 8000, ""], ["Fotograf", 10000, ""],[],
+      [H("Celkem odhad"), "=SUM(B8:B12)", "=SUM(C8:C12)"],
+      [H("Zbývá z rozpočtu"), "=B5-B14", ""]
+    ]) ] },
+    en:{ name:"Event Budget", desc:"Estimate vs. actual, budget remaining", sheets:[ sheetFromMatrix("Event Budget", [
+      [H("Event Budget")],[],
+      ["Event name:", "Wedding / Party"], ["Date:", "2026-06-01"], ["Total budget:", 8000],[],
+      [H("Item"), H("Estimate"), H("Actual")],
+      ["Venue", 2500, ""], ["Catering", 3000, ""], ["Decorations", 500, ""],
+      ["Music / DJ", 800, ""], ["Photographer", 1000, ""],[],
+      [H("Total estimate"), "=SUM(B8:B12)", "=SUM(C8:C12)"],
+      [H("Remaining budget"), "=B5-B14", ""]
+    ]) ] } },
+  { id:"attendance", icon:"🗓️",
+    cs:{ name:"Docházka", desc:"Jméno, dny v týdnu, celkem", sheets:[ sheetFromMatrix("Docházka", [
+      [H("Docházka")],[],
+      [H("Jméno"), H("Po"), H("Út"), H("St"), H("Čt"), H("Pá"), H("Celkem")],
+      ["Jana Nováková", 1,1,1,0,1, "=SUM(B4:F4)"],
+      ["Petr Svoboda", 1,1,0,1,1, "=SUM(B5:F5)"],
+      ["Eva Dvořáková", 1,0,1,1,1, "=SUM(B6:F6)"]
+    ]) ] },
+    en:{ name:"Attendance Tracker", desc:"Name, weekdays, total present", sheets:[ sheetFromMatrix("Attendance", [
+      [H("Attendance Tracker")],[],
+      [H("Name"), H("Mon"), H("Tue"), H("Wed"), H("Thu"), H("Fri"), H("Total")],
+      ["Jane Doe", 1,1,1,0,1, "=SUM(B4:F4)"],
+      ["John Smith", 1,1,0,1,1, "=SUM(B5:F5)"],
+      ["Maria Garcia", 1,0,1,1,1, "=SUM(B6:F6)"]
     ]) ] } },
   { id:"blank", icon:"➕",
     cs:{ name:"Prázdná tabulka", desc:"Začít od nuly", sheets:[ newSheet("List1") ] },
@@ -2296,8 +2489,61 @@ S.bgColorInput.addEventListener("input", function(){ S.setBgColor(S.bgColorInput
 
 document.getElementById("sheetAddBtn").addEventListener("click", function(){ S.addSheet(); });
 
+/* ============ Column/row resize ============ */
+var resizeState = null;
+S.gridTable.addEventListener("mousedown", function(e){
+  var colHandle = e.target.closest(".col-resize-handle");
+  if (colHandle){
+    e.preventDefault(); e.stopPropagation();
+    var cIdx = +colHandle.dataset.col;
+    var sheet0 = S.activeSheet();
+    resizeState = { type:"col", index:cIdx, startPos:e.clientX, startSize:((sheet0.colWidths && sheet0.colWidths[cIdx]) || S.COL_WIDTH_DEFAULT), startTableW: S.gridTable.getBoundingClientRect().width, pending:null, handle:colHandle };
+    colHandle.classList.add("resizing");
+    return;
+  }
+  var rowHandle = e.target.closest(".row-resize-handle");
+  if (rowHandle){
+    e.preventDefault(); e.stopPropagation();
+    var rIdx = +rowHandle.dataset.row;
+    var sheet1 = S.activeSheet();
+    resizeState = { type:"row", index:rIdx, startPos:e.clientY, startSize:((sheet1.rowHeights && sheet1.rowHeights[rIdx]) || S.ROW_HEIGHT_DEFAULT), pending:null, handle:rowHandle };
+    rowHandle.classList.add("resizing");
+    return;
+  }
+}, true);
+document.addEventListener("mousemove", function(e){
+  if (!resizeState) return;
+  if (resizeState.type === "col"){
+    var w = Math.max(S.COL_WIDTH_MIN, Math.min(S.COL_WIDTH_MAX, resizeState.startSize + (e.clientX - resizeState.startPos)));
+    resizeState.pending = w;
+    var col = S.gridTable.querySelector("colgroup col:nth-child(" + (resizeState.index + 2) + ")");
+    if (col) col.style.width = w + "px";
+    S.gridTable.style.width = (resizeState.startTableW + (w - resizeState.startSize)) + "px";
+  } else {
+    var h = Math.max(S.ROW_HEIGHT_MIN, Math.min(S.ROW_HEIGHT_MAX, resizeState.startSize + (e.clientY - resizeState.startPos)));
+    resizeState.pending = h;
+    var tr = S.gridTable.querySelectorAll("tbody tr")[resizeState.index];
+    if (tr){
+      tr.querySelectorAll("td, th").forEach(function(cell){ cell.style.height = h + "px"; });
+    }
+  }
+});
+document.addEventListener("mouseup", function(){
+  if (!resizeState) return;
+  var rs = resizeState; resizeState = null;
+  rs.handle.classList.remove("resizing");
+  if (rs.pending === null) return;
+  if (rs.type === "col") S.setColWidth(rs.index, rs.pending);
+  else S.setRowHeight(rs.index, rs.pending);
+});
+S.gridTable.addEventListener("dblclick", function(e){
+  var colHandle = e.target.closest(".col-resize-handle");
+  if (colHandle){ S.autoFitColumn(+colHandle.dataset.col); return; }
+});
+
 /* ============ Grid mouse interaction ============ */
 S.gridTable.addEventListener("mousedown", function(e){
+  if (e.target.closest(".col-resize-handle") || e.target.closest(".row-resize-handle")) return;
   var corner = e.target.closest("th.corner");
   var thCol = corner ? null : e.target.closest("th[data-col]");
   var thRow = e.target.closest("th[data-row]");
@@ -2324,6 +2570,7 @@ S.gridTable.addEventListener("mousemove", function(e){
   S.renderAll();
 });
 S.gridTable.addEventListener("dblclick", function(e){
+  if (e.target.closest(".col-resize-handle") || e.target.closest(".row-resize-handle")) return;
   var td = e.target.closest("td[data-ref]"); if (!td) return;
   S.startEdit(+td.dataset.row, +td.dataset.col, null);
 });
