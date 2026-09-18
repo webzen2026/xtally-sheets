@@ -320,12 +320,19 @@
     .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(10,10,20,.5); z-index:110; }
     .sidebar-backdrop.show{ display:block; }
     .mobile-only{ display:inline-flex; }
-    .doc-title-row{ padding-inline:16px; }
     .statusbar{ padding-inline:16px; }
     .synth-link{ display:none; }
-  }
-  @media (max-width:520px){
-    .toolbar .grp:nth-child(n+7){ order:1; }
+    /* Hlavička a toolbar jako jeden vodorovně posuvný řádek místo zalamování na
+       několik řádků — na mobilu tím zůstane naprostá většina výšky pro samotnou
+       tabulku místo toho, aby ji sežraly nadpis/nástroje nad ní. */
+    .doc-title-row{ padding-inline:16px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .doc-title-row::-webkit-scrollbar{ display:none; }
+    .doc-title-row > *{ flex-shrink:0; }
+    .doc-title-input{ min-width:70px; }
+    .save-state #saveLabel{ display:none; }
+    .toolbar{ flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .toolbar::-webkit-scrollbar{ display:none; }
+    .toolbar .grp{ flex-shrink:0; }
   }
   @media (max-width:880px){
     /* Zabrání automatickému přiblížení stránky na iOS při klepnutí do rozbalovacích nabídek
