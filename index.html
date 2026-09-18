@@ -649,6 +649,39 @@
 
 <section class="feature-strip">
   <div class="wrap">
+    <details class="section-details" id="guideDetails">
+      <summary>
+        <div class="section-summary-row">
+          <h2 data-i18n="guideH2" style="margin:0;">Návod k použití</h2>
+          <span class="section-toggle-hint">
+            <span id="guideToggleLabel" data-i18n="guideToggleMore">Zobrazit</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </summary>
+      <div class="section-body">
+        <div class="section-head" style="margin-top:0;">
+          <p data-i18n="guideP">Deset kroků, jak z Xtally Tabulky vytěžit maximum.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><h3 data-i18n="guide1h">Vytvořte tabulku</h3><p data-i18n="guide1p">Klikněte na „Nová tabulka“, nebo vyberte hotovou šablonu z nabídky. Název tabulky změníte kliknutím na něj nahoře.</p></div>
+          <div class="step"><div class="num">2</div><h3 data-i18n="guide2h">Zadávejte data a vzorce</h3><p data-i18n="guide2p">Klikněte do buňky a pište. Vzorec začíná znakem =, například =SUM(B2:B10) nebo =PRŮMĚR(A1:A5). Enter nebo Tab vás posune na další buňku.</p></div>
+          <div class="step"><div class="num">3</div><h3 data-i18n="guide3h">Formátujte podle potřeby</h3><p data-i18n="guide3p">V horní liště nastavíte tučné písmo, kurzívu, barvy, zarovnání, formát čísla, měnu i procenta.</p></div>
+          <div class="step"><div class="num">4</div><h3 data-i18n="guide4h">Měňte šířku sloupců a výšku řádků</h3><p data-i18n="guide4p">Přetáhněte myší okraj záhlaví sloupce nebo řádku. Dvojklikem na okraj sloupce nastavíte jeho šířku automaticky podle nejdelšího textu.</p></div>
+          <div class="step"><div class="num">5</div><h3 data-i18n="guide5h">Pracujte s více listy</h3><p data-i18n="guide5p">Dole najdete záložky listů. Nový list přidáte tlačítkem „+“, přejmenujete dvojklikem a pořadí změníte přetažením.</p></div>
+          <div class="step"><div class="num">6</div><h3 data-i18n="guide6h">Používejte šablony</h3><p data-i18n="guide6p">V nabídce šablon najdete rozpočet, fakturu, docházku, knihu jízd, rozdělení účtu a další – stačí vybrat a upravit podle sebe.</p></div>
+          <div class="step"><div class="num">7</div><h3 data-i18n="guide7h">Importujte existující soubor</h3><p data-i18n="guide7p">Tlačítkem „Import“ nahrajete soubor .xlsx nebo .csv a pokračujete v úpravách přesně tam, kde jste skončili.</p></div>
+          <div class="step"><div class="num">8</div><h3 data-i18n="guide8h">Exportujte a zálohujte</h3><p data-i18n="guide8p">Uložte jako .xlsx pro Excel, .csv pro jiné programy, PDF na tisk, nebo kompletní zálohu jako .json.</p></div>
+          <div class="step"><div class="num">9</div><h3 data-i18n="guide9h">Nic neukládejte ručně</h3><p data-i18n="guide9p">Xtally Tabulky ukládá vše průběžně přímo v tomto prohlížeči. Pro jistotu si ale důležité tabulky pravidelně exportujte.</p></div>
+          <div class="step"><div class="num">10</div><h3 data-i18n="guide10h">Nainstalujte si appku</h3><p data-i18n="guide10p">Na mobilu i počítači si appku nainstalujete jako samostatnou aplikaci (PWA) a použijete ji i bez připojení k internetu.</p></div>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="feature-strip">
+  <div class="wrap">
     <details class="section-details" id="faqDetails">
       <summary>
         <div class="section-summary-row">
@@ -1049,6 +1082,7 @@ var I18N = {
     stepsToggleMore:"Zobrazit kroky", stepsToggleLess:"Skrýt kroky",
     featuresToggleMore:"Zobrazit funkce", featuresToggleLess:"Skrýt funkce",
     privacyToggleMore:"Zobrazit podrobnosti", privacyToggleLess:"Skrýt podrobnosti",
+    guideToggleMore:"Zobrazit návod", guideToggleLess:"Skrýt návod",
     faqToggleMore:"Zobrazit dotazy", faqToggleLess:"Skrýt dotazy",
     trust1:"✓ Funguje offline", trust2:"✓ Ukládá se automaticky", trust3:"✓ Import a export Excel (.xlsx)", trust4:"✓ Responzivní na mobilu i počítači",
     newDoc:"+ Nová tabulka", browseTemplates:"Šablony", importBtnLabel:"Import", exportBtnLabel:"Export",
@@ -1080,6 +1114,17 @@ var I18N = {
     privLi4:"Appka nepoužívá sledovací cookies, analytiku ani reklamní partnery.",
     privLi5:"Protože vaše data žijí jen v prohlížeči, důležité tabulky si pravidelně zálohujte (tlačítko „Export“).",
     privacyFullLink:"Přečíst kompletní zásady ochrany soukromí →",
+    guideH2:"Návod k použití", guideP:"Deset kroků, jak z Xtally Tabulky vytěžit maximum.",
+    guide1h:"Vytvořte tabulku", guide1p:"Klikněte na „Nová tabulka“, nebo vyberte hotovou šablonu z nabídky. Název tabulky změníte kliknutím na něj nahoře.",
+    guide2h:"Zadávejte data a vzorce", guide2p:"Klikněte do buňky a pište. Vzorec začíná znakem =, například =SUM(B2:B10) nebo =PRŮMĚR(A1:A5). Enter nebo Tab vás posune na další buňku.",
+    guide3h:"Formátujte podle potřeby", guide3p:"V horní liště nastavíte tučné písmo, kurzívu, barvy, zarovnání, formát čísla, měnu i procenta.",
+    guide4h:"Měňte šířku sloupců a výšku řádků", guide4p:"Přetáhněte myší okraj záhlaví sloupce nebo řádku. Dvojklikem na okraj sloupce nastavíte jeho šířku automaticky podle nejdelšího textu.",
+    guide5h:"Pracujte s více listy", guide5p:"Dole najdete záložky listů. Nový list přidáte tlačítkem „+“, přejmenujete dvojklikem a pořadí změníte přetažením.",
+    guide6h:"Používejte šablony", guide6p:"V nabídce šablon najdete rozpočet, fakturu, docházku, knihu jízd, rozdělení účtu a další – stačí vybrat a upravit podle sebe.",
+    guide7h:"Importujte existující soubor", guide7p:"Tlačítkem „Import“ nahrajete soubor .xlsx nebo .csv a pokračujete v úpravách přesně tam, kde jste skončili.",
+    guide8h:"Exportujte a zálohujte", guide8p:"Uložte jako .xlsx pro Excel, .csv pro jiné programy, PDF na tisk, nebo kompletní zálohu jako .json.",
+    guide9h:"Nic neukládejte ručně", guide9p:"Xtally Tabulky ukládá vše průběžně přímo v tomto prohlížeči. Pro jistotu si ale důležité tabulky pravidelně exportujte.",
+    guide10h:"Nainstalujte si appku", guide10p:"Na mobilu i počítači si appku nainstalujete jako samostatnou aplikaci (PWA) a použijete ji i bez připojení k internetu.",
     faqH2:"Časté dotazy",
     faq1q:"Je Xtally Tabulky opravdu zdarma?", faq1a:"Ano, appka je zcela zdarma, bez registrace, předplatného nebo skrytých poplatků.",
     faq2q:"Kam se ukládají moje tabulky?", faq2a:"Přímo ve vašem prohlížeči (localStorage). Nikam se neodesílají – pokud vymažete data prohlížeče, tabulky zmizí, proto si důležité soubory zálohujte nebo exportujte.",
@@ -1117,6 +1162,7 @@ var I18N = {
     stepsToggleMore:"Show steps", stepsToggleLess:"Hide steps",
     featuresToggleMore:"Show features", featuresToggleLess:"Hide features",
     privacyToggleMore:"Show details", privacyToggleLess:"Hide details",
+    guideToggleMore:"Show guide", guideToggleLess:"Hide guide",
     faqToggleMore:"Show questions", faqToggleLess:"Hide questions",
     trust1:"✓ Works offline", trust2:"✓ Autosaves automatically", trust3:"✓ Import & export Excel (.xlsx)", trust4:"✓ Responsive on mobile and desktop",
     newDoc:"+ New spreadsheet", browseTemplates:"Templates", importBtnLabel:"Import", exportBtnLabel:"Export",
@@ -1148,6 +1194,17 @@ var I18N = {
     privLi4:"The app uses no tracking cookies, analytics, or ad partners.",
     privLi5:"Because your data lives only in your browser, back up important spreadsheets regularly (the \"Export\" button).",
     privacyFullLink:"Read the full privacy policy →",
+    guideH2:"How to use it", guideP:"Ten steps to get the most out of Xtally Sheets.",
+    guide1h:"Create a sheet", guide1p:"Click \"New spreadsheet\", or pick a ready-made template from the gallery. Rename it anytime by clicking the title at the top.",
+    guide2h:"Enter data and formulas", guide2p:"Click a cell and start typing. A formula starts with =, for example =SUM(B2:B10) or =AVERAGE(A1:A5). Enter or Tab moves you to the next cell.",
+    guide3h:"Format as needed", guide3p:"The toolbar at the top gives you bold, italic, colors, alignment, number formats, currency and percentages.",
+    guide4h:"Resize columns and rows", guide4p:"Drag the edge of a column or row header with your mouse. Double-click a column edge to auto-fit its width to the longest text.",
+    guide5h:"Work with multiple sheets", guide5p:"Sheet tabs live at the bottom. Add a new one with \"+\", rename it by double-clicking, and reorder by dragging.",
+    guide6h:"Use templates", guide6p:"The template gallery includes a budget, invoice, attendance tracker, mileage log, bill splitter and more — just pick one and adjust it to your needs.",
+    guide7h:"Import an existing file", guide7p:"Use \"Import\" to upload an .xlsx or .csv file and keep working right where you left off.",
+    guide8h:"Export and back up", guide8p:"Save as .xlsx for Excel, .csv for other programs, PDF for printing, or a full backup as .json.",
+    guide9h:"Nothing to save manually", guide9p:"Xtally Sheets keeps saving everything continuously, right in this browser. For extra safety, export important sheets regularly.",
+    guide10h:"Install the app", guide10p:"On mobile or desktop, install it as a standalone app (PWA) and use it even without an internet connection.",
     faqH2:"Frequently asked questions",
     faq1q:"Is Xtally Sheets really free?", faq1a:"Yes, the app is completely free, with no sign-up, subscription, or hidden fees.",
     faq2q:"Where are my spreadsheets stored?", faq2a:"Right in your browser (localStorage). Nothing is uploaded — if you clear your browser data your spreadsheets will disappear, so back up or export anything important.",
@@ -2777,6 +2834,7 @@ var updateHeroToggleLabel = setupCollapsible("heroDetails", "heroToggleLabel", "
 var updateStepsToggleLabel = setupCollapsible("stepsDetails", "stepsToggleLabel", "stepsToggleMore", "stepsToggleLess");
 var updateFeaturesToggleLabel = setupCollapsible("featuresDetails", "featuresToggleLabel", "featuresToggleMore", "featuresToggleLess");
 var updatePrivacyToggleLabel = setupCollapsible("privacyDetails", "privacyToggleLabel", "privacyToggleMore", "privacyToggleLess");
+var updateGuideToggleLabel = setupCollapsible("guideDetails", "guideToggleLabel", "guideToggleMore", "guideToggleLess");
 var updateFaqToggleLabel = setupCollapsible("faqDetails", "faqToggleLabel", "faqToggleMore", "faqToggleLess");
 renderTemplateGrid();
 S.selectDoc(startId);
