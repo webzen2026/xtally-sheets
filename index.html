@@ -272,6 +272,10 @@
   .col-resize-handle:hover, .col-resize-handle.resizing{ background:var(--accent); opacity:.55; }
   .row-resize-handle{ position:absolute; left:0; bottom:-3px; width:100%; height:6px; cursor:row-resize; z-index:6; touch-action:none; }
   .row-resize-handle:hover, .row-resize-handle.resizing{ background:var(--accent); opacity:.55; }
+  @media (pointer:coarse){
+    .col-resize-handle{ right:-10px; width:20px; }
+    .row-resize-handle{ bottom:-10px; height:20px; }
+  }
 
   .grid-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 14px; border-top:1px solid var(--line); flex-wrap:wrap; }
   .sheet-tabs{ display:flex; align-items:center; gap:4px; overflow-x:auto; flex:1; min-width:0; }
@@ -2548,54 +2552,89 @@ document.getElementById("sheetAddBtn").addEventListener("click", function(){ S.a
 
 /* ============ Column/row resize ============ */
 var resizeState = null;
-S.gridTable.addEventListener("mousedown", function(e){
+var resizeDidMove = false;
+var colHandleTapState = null;
+function resizePoint(e){
+  if (e.touches && e.touches.length) return { x:e.touches[0].clientX, y:e.touches[0].clientY };
+  if (e.changedTouches && e.changedTouches.length) return { x:e.changedTouches[0].clientX, y:e.changedTouches[0].clientY };
+  return { x:e.clientX, y:e.clientY };
+}
+function resizeStart(e){
   var colHandle = e.target.closest(".col-resize-handle");
   if (colHandle){
     e.preventDefault(); e.stopPropagation();
+    var p0 = resizePoint(e);
     var cIdx = +colHandle.dataset.col;
     var sheet0 = S.activeSheet();
-    resizeState = { type:"col", index:cIdx, startPos:e.clientX, startSize:((sheet0.colWidths && sheet0.colWidths[cIdx]) || S.COL_WIDTH_DEFAULT), startTableW: S.gridTable.getBoundingClientRect().width, pending:null, handle:colHandle };
+    resizeState = { type:"col", index:cIdx, startPos:p0.x, startSize:((sheet0.colWidths && sheet0.colWidths[cIdx]) || S.COL_WIDTH_DEFAULT), startTableW: S.gridTable.getBoundingClientRect().width, pending:null, handle:colHandle };
+    resizeDidMove = false;
     colHandle.classList.add("resizing");
     return;
   }
   var rowHandle = e.target.closest(".row-resize-handle");
   if (rowHandle){
     e.preventDefault(); e.stopPropagation();
+    var p1 = resizePoint(e);
     var rIdx = +rowHandle.dataset.row;
     var sheet1 = S.activeSheet();
-    resizeState = { type:"row", index:rIdx, startPos:e.clientY, startSize:((sheet1.rowHeights && sheet1.rowHeights[rIdx]) || S.ROW_HEIGHT_DEFAULT), pending:null, handle:rowHandle };
+    resizeState = { type:"row", index:rIdx, startPos:p1.y, startSize:((sheet1.rowHeights && sheet1.rowHeights[rIdx]) || S.ROW_HEIGHT_DEFAULT), pending:null, handle:rowHandle };
+    resizeDidMove = false;
     rowHandle.classList.add("resizing");
     return;
   }
-}, true);
-document.addEventListener("mousemove", function(e){
+}
+function resizeMove(e){
   if (!resizeState) return;
+  var p = resizePoint(e);
+  if (e.cancelable) e.preventDefault();
   if (resizeState.type === "col"){
-    var w = Math.max(S.COL_WIDTH_MIN, Math.min(S.COL_WIDTH_MAX, resizeState.startSize + (e.clientX - resizeState.startPos)));
+    var w = Math.max(S.COL_WIDTH_MIN, Math.min(S.COL_WIDTH_MAX, resizeState.startSize + (p.x - resizeState.startPos)));
+    if (Math.abs(p.x - resizeState.startPos) > 3) resizeDidMove = true;
     resizeState.pending = w;
     var col = S.gridTable.querySelector("colgroup col:nth-child(" + (resizeState.index + 2) + ")");
     if (col) col.style.width = w + "px";
     S.gridTable.style.width = (resizeState.startTableW + (w - resizeState.startSize)) + "px";
   } else {
-    var h = Math.max(S.ROW_HEIGHT_MIN, Math.min(S.ROW_HEIGHT_MAX, resizeState.startSize + (e.clientY - resizeState.startPos)));
+    var h = Math.max(S.ROW_HEIGHT_MIN, Math.min(S.ROW_HEIGHT_MAX, resizeState.startSize + (p.y - resizeState.startPos)));
+    if (Math.abs(p.y - resizeState.startPos) > 3) resizeDidMove = true;
     resizeState.pending = h;
     var tr = S.gridTable.querySelectorAll("tbody tr")[resizeState.index];
     if (tr){
       tr.querySelectorAll("td, th").forEach(function(cell){ cell.style.height = h + "px"; });
     }
   }
-});
-document.addEventListener("mouseup", function(){
+}
+function resizeEnd(){
   if (!resizeState) return;
   var rs = resizeState; resizeState = null;
   rs.handle.classList.remove("resizing");
-  if (rs.pending === null) return;
+  if (rs.pending === null || !resizeDidMove) return;
   if (rs.type === "col") S.setColWidth(rs.index, rs.pending);
   else S.setRowHeight(rs.index, rs.pending);
-});
+}
+S.gridTable.addEventListener("mousedown", resizeStart, true);
+document.addEventListener("mousemove", resizeMove);
+document.addEventListener("mouseup", resizeEnd);
+S.gridTable.addEventListener("touchstart", resizeStart, { capture:true, passive:false });
+document.addEventListener("touchmove", resizeMove, { passive:false });
+document.addEventListener("touchend", resizeEnd);
+document.addEventListener("touchcancel", resizeEnd);
 S.gridTable.addEventListener("dblclick", function(e){
   var colHandle = e.target.closest(".col-resize-handle");
   if (colHandle){ S.autoFitColumn(+colHandle.dataset.col); return; }
+});
+/* Double-tap a column handle on touch devices to auto-fit its width (mirrors desktop double-click) */
+S.gridTable.addEventListener("touchend", function(e){
+  var colHandle = e.target.closest(".col-resize-handle");
+  if (!colHandle || resizeDidMove){ colHandleTapState = null; return; }
+  var now = Date.now();
+  var cIdx = +colHandle.dataset.col;
+  if (colHandleTapState && colHandleTapState.col === cIdx && (now - colHandleTapState.t) < 400){
+    S.autoFitColumn(cIdx);
+    colHandleTapState = null;
+  } else {
+    colHandleTapState = { col:cIdx, t:now };
+  }
 });
 
 /* ============ Grid mouse interaction ============ */
